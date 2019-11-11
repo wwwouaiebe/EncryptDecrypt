@@ -8,7 +8,7 @@ Select a file with the encrypt button, gives a password and save the encrypted f
 
 ## Decrypting a file
 
-Select a file with the decrypt button, gives a password and save the decrypted file...
+Select a file with the decrypt button, gives the password used for encrypting and save the decrypted file...
 
 ## What if I forgott the password
 
