@@ -1,0 +1,29 @@
+{
+  "name": "encryptdecript",
+  "version": "1.0.0",
+  "description": "File encryptor",
+  "main": "src/main.js",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "^1.0.4",
+    "grunt-browserify": "^5.3.0",
+    "grunt-build-number": "^1.0.0",
+    "grunt-contrib-clean": "^2.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-jshint": "^2.1.0",
+    "grunt-contrib-uglify": "^4.0.1",
+    "grunt-includes": "^1.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wwwouaiebe/EncryptDecrypt.git"
+  },
+  "keywords": [],
+  "author": "wwwouaiebe",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/wwwouaiebe/EncryptDecrypt/issues"
+  },
+  "homepage": "https://github.com/wwwouaiebe/EncryptDecrypt#readme",
+  "nextBuild": "137"
+}
