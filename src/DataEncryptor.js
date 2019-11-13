@@ -38,7 +38,7 @@ Tests :
 
 	var dataEncryptor = function ( ) {
 		
-		var m_Data = {};
+		var m_Data = null;
 		
 		var m_FileContent;
 
@@ -136,7 +136,7 @@ Tests :
 			.then ( 
 				function ( decryptedText ) {
 					m_OkHandler ( );
-					return JSON.parse ( new TextDecoder().decode ( new Uint8Array( decryptedText ) ) );
+					return new Uint8Array( decryptedText );
 				},
 				m_ErrorHandler
 			)
@@ -157,7 +157,7 @@ Tests :
 					iv: ivBytes
 				},
 				encryptKey,
-				new window.TextEncoder ( ).encode ( JSON.stringify ( m_Data ) )
+				m_Data
 			)
 			.then ( 
 				function ( cipherText ) {
