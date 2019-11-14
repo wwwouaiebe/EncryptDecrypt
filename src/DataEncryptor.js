@@ -40,8 +40,6 @@ Tests :
 		
 		var m_Data = null;
 		
-		var m_OnError = null;
-		
 		var m_OnOk = null;
 		
 		/*
@@ -93,13 +91,7 @@ Tests :
 				}, 
 				decryptKey, 
 				new Uint8Array ( m_Data.slice ( 16 ) )
-			)
-			.then ( 
-				function ( decryptedText ) {
-					m_OnOk ( decryptedText );
-				}
-			)
-			.catch ( m_OnError	);
+			);
 		};
 
 		/*
@@ -111,12 +103,11 @@ Tests :
 		var m_Decrypt = function ( data, onOk, onError, pswdPromise ) {
 
 			m_Data = data;
-			m_OnError = onError;
-			m_OnOk = onOk;
-			
+
 			pswdPromise
 			.then ( m_PswdToKey )
 			.then ( m_DecryptData )
+			.then ( onOk )
 			.catch ( onError );
 		};
 		
@@ -138,14 +129,13 @@ Tests :
 			)
 			.then ( 
 				function ( cipherText ) {
-					var blob = new Blob(
+					var blob =  new Blob(
 						[ivBytes, new Uint8Array ( cipherText ) ],
 						{type: "application/octet-stream"}
 					);
 					m_OnOk ( blob );
 				}
-			)
-			.catch ( m_OnError );
+			);
 		};
 
 		/*
@@ -157,7 +147,6 @@ Tests :
 		var m_Encrypt = function ( data, onOk, onError, pswdPromise ) {
 
 			m_Data = data;
-			m_OnError = onError;
 			m_OnOk = onOk;
 			
 			pswdPromise

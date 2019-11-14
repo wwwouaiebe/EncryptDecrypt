@@ -20,7 +20,7 @@
 		<div id="errorDiv" class="red">
 		</div>
 		<script>
-			/*! encryptdecript - version 1.0.0 - build 0229 - 2019-11-14 - Copyright 2019 2019 wwwouaiebe - Contact: http//www.ouaie.be/ - This  program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or any later version.*/
+			/*! encryptdecript - version 1.0.0 - build 0242 - 2019-11-14 - Copyright 2019 2019 wwwouaiebe - Contact: http//www.ouaie.be/ - This  program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or any later version.*/
 
 
 			!function r(e, n, t) {
@@ -68,9 +68,7 @@
 			                    return window.crypto.subtle.decrypt({
 			                        name: "AES-GCM",
 			                        iv: new Uint8Array(m_Data.slice(0, 16))
-			                    }, decryptKey, new Uint8Array(m_Data.slice(16))).then(function(decryptedText) {
-			                        m_OnOk(decryptedText);
-			                    }).catch(m_OnError);
+			                    }, decryptKey, new Uint8Array(m_Data.slice(16)));
 			                }
 			                function m_EncryptData(encryptKey) {
 			                    var ivBytes = window.crypto.getRandomValues(new Uint8Array(16));
@@ -82,18 +80,18 @@
 			                            type: "application/octet-stream"
 			                        });
 			                        m_OnOk(blob);
-			                    }).catch(m_OnError);
+			                    });
 			                }
-			                var m_Data = null, m_OnError = null, m_OnOk = null;
+			                var m_Data = null, m_OnOk = null;
 			                return Object.seal({
 			                    encrypt: function(data, onOk, onError, pswdPromise) {
 			                        !function(data, onOk, onError, pswdPromise) {
-			                            m_Data = data, m_OnError = onError, m_OnOk = onOk, pswdPromise.then(m_PswdToKey).then(m_EncryptData).catch(onError);
+			                            m_Data = data, m_OnOk = onOk, pswdPromise.then(m_PswdToKey).then(m_EncryptData).catch(onError);
 			                        }(data, onOk, onError, pswdPromise);
 			                    },
 			                    decrypt: function(data, onOk, onError, pswdPromise) {
 			                        !function(data, onOk, onError, pswdPromise) {
-			                            m_Data = data, m_OnError = onError, m_OnOk = onOk, pswdPromise.then(m_PswdToKey).then(m_DecryptData).catch(onError);
+			                            m_Data = data, pswdPromise.then(m_PswdToKey).then(m_DecryptData).then(onOk).catch(onError);
 			                        }(data, onOk, onError, pswdPromise);
 			                    }
 			                });
@@ -108,23 +106,29 @@
 			                pswdMainDiv.innerHTML = "", pswdMainDiv.style.visibility = "hidden";
 			            }
 			            function onError(err) {
-			                restoreInterface(), document.getElementById("errorDiv").innerHTML = "An error occurs...", 
+			                restoreInterface(), document.getElementById("errorDiv").innerHTML = "An error occurs..." + err.message, 
 			                console.log(err);
 			            }
 			            function onEncryptOk(encryptedDataBlob) {
-			                restoreInterface();
 			                var blobUrl = URL.createObjectURL(encryptedDataBlob), element = document.createElement("a");
 			                element.setAttribute("href", blobUrl), element.setAttribute("download", "Data"), 
 			                element.style.display = "none", document.body.appendChild(element), element.click(), 
-			                document.body.removeChild(element), window.URL.revokeObjectURL(blobUrl);
+			                document.body.removeChild(element), window.URL.revokeObjectURL(blobUrl), restoreInterface();
 			            }
 			            function onDecryptOk(decryptedData) {
-			                restoreInterface();
-			                var dataObject = JSON.parse(new TextDecoder().decode(decryptedData)), tmpArray = [];
+			                var dataObject;
+			                try {
+			                    dataObject = JSON.parse(new TextDecoder().decode(decryptedData));
+			                } catch (err) {
+			                    return void onError(err);
+			                }
+			                var tmpArray = [];
 			                for (var property in dataObject.data) tmpArray.push(dataObject.data[property]);
 			                var blob = new Blob([ new Uint8Array(tmpArray) ], {
 			                    type: dataObject.type
-			                }), blobUrl = URL.createObjectURL(blob), element = document.createElement("a");
+			                }), blobUrl = URL.createObjectURL(blob);
+			                restoreInterface();
+			                var element = document.createElement("a");
 			                element.setAttribute("href", blobUrl), -1 === [ "application/pdf", "text/html", "image/jpeg", "image/png" ].indexOf(dataObject.type) && element.setAttribute("download", dataObject.name), 
 			                element.style.display = "none", document.body.appendChild(element), element.click(), 
 			                document.body.removeChild(element), window.URL.revokeObjectURL(blobUrl);

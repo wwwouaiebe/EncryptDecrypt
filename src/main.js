@@ -54,7 +54,7 @@ Tests :
 		
 		restoreInterface ( );
 		
-		document.getElementById ( "errorDiv" ).innerHTML = "An error occurs...";
+		document.getElementById ( "errorDiv" ).innerHTML = "An error occurs..." + err.message;
 		console.log ( err );
 	};
 	
@@ -66,8 +66,6 @@ Tests :
 
 	var onEncryptOk = function ( encryptedDataBlob ) {
 		
-		restoreInterface ( );
-		
 		var blobUrl = URL.createObjectURL ( encryptedDataBlob );
 		var element = document.createElement ( 'a' );
 		element.setAttribute( 'href', blobUrl );
@@ -77,6 +75,8 @@ Tests :
 		element.click ( );
 		document.body.removeChild ( element );
 		window.URL.revokeObjectURL ( blobUrl );
+
+		restoreInterface ( );
 	};
 
 	/*
@@ -87,9 +87,14 @@ Tests :
 
 	var onDecryptOk = function ( decryptedData ) {
 		
-		restoreInterface ( );
-		
-		var dataObject = JSON.parse ( new TextDecoder ( ).decode ( decryptedData ) );
+		var dataObject;
+		try {
+			dataObject = JSON.parse ( new TextDecoder ( ).decode ( decryptedData ) );
+		}
+		catch ( err ) {
+			onError ( err );
+			return;
+		}
 		var tmpArray = [];
 		for ( var property in dataObject.data ) {
 		  tmpArray.push ( dataObject.data [ property ] );
@@ -100,6 +105,8 @@ Tests :
 			{type: dataObject.type}
 		);
 		var blobUrl = URL.createObjectURL(blob);
+
+		restoreInterface ( );
 		
 		var element = document.createElement ( 'a' );
 		element.setAttribute( 'href', blobUrl );
