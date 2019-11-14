@@ -40,57 +40,20 @@ Tests :
 		
 		var m_Data = null;
 		
-		var m_FileContent;
-
-		/*
-		--- m_ErrorHandler function -----------------------------------------------------------------------------------
+		var m_OnError = null;
 		
-		Default error handler. Must be overriden.
-
-		---------------------------------------------------------------------------------------------------------------
-		*/
-
-		var m_ErrorHandler = function ( error ) { console.log ( 'm_ErrorHandler -  ' + error.message ); };
+		var m_OnOk = null;
 		
 		/*
-		--- m_OkHandler function --------------------------------------------------------------------------------------
-		
-		Default ok handler. Must be overriden.
-
-		---------------------------------------------------------------------------------------------------------------
-		*/
-
-		var m_OkHandler = function ( ) { console.log ( 'End...' ); };
-
-		/*
-		--- m_OkHandler function --------------------------------------------------------------------------------------
-		
-		Default password dialog. Must be overriden.
-
-		---------------------------------------------------------------------------------------------------------------
-		*/
-
-		var m_PasswordDialog = function ( returnOnOk, returnOnCancel ) {
-			var timoutId = window.setTimeout ( 
-				function ( ) { 
-					returnOnOk ( 
-						new window.TextEncoder ( ).encode ( "Jules" ) 
-					);
-				},
-				100
-			);
-		};
-		
-		/*
-		--- m_PasswordToKey function ----------------------------------------------------------------------------------
+		--- m_PswdToKey function --------------------------------------------------------------------------------------
 		
 		---------------------------------------------------------------------------------------------------------------
 		*/
 
-		var m_PasswordToKey = function ( password ) {
+		var m_PswdToKey = function ( pswd ) {
 			return window.crypto.subtle.importKey (
 				"raw", 
-				password, 
+				pswd, 
 				{ name: "PBKDF2" }, 
 				false, 
 				[ "deriveKey" ]
@@ -112,12 +75,10 @@ Tests :
 						false,
 						[ "encrypt", "decrypt" ]
 					);
-				},
-				m_ErrorHandler
-			)
-			.catch ( m_ErrorHandler );
+				}
+			);
 		};
-		
+
 		/*
 		--- m_DecryptData function ------------------------------------------------------------------------------------
 		
@@ -128,19 +89,35 @@ Tests :
 			return window.crypto.subtle.decrypt (
 				{
 					name: "AES-GCM", 
-					iv: new Uint8Array ( m_FileContent.slice ( 0, 16 ) )
+					iv: new Uint8Array ( m_Data.slice ( 0, 16 ) )
 				}, 
 				decryptKey, 
-				new Uint8Array ( m_FileContent.slice ( 16 ) )
+				new Uint8Array ( m_Data.slice ( 16 ) )
 			)
 			.then ( 
 				function ( decryptedText ) {
-					m_OkHandler ( );
-					return new Uint8Array( decryptedText );
-				},
-				m_ErrorHandler
+					m_OnOk ( decryptedText );
+				}
 			)
-			.catch ( m_ErrorHandler	);
+			.catch ( m_OnError	);
+		};
+
+		/*
+		--- m_Encrypt object ------------------------------------------------------------------------------------------
+		
+		---------------------------------------------------------------------------------------------------------------
+		*/
+
+		var m_Decrypt = function ( data, onOk, onError, pswdPromise ) {
+
+			m_Data = data;
+			m_OnError = onError;
+			m_OnOk = onOk;
+			
+			pswdPromise
+			.then ( m_PswdToKey )
+			.then ( m_DecryptData )
+			.catch ( onError );
 		};
 		
 		/*
@@ -161,87 +138,32 @@ Tests :
 			)
 			.then ( 
 				function ( cipherText ) {
-					m_OkHandler ( );
 					var blob = new Blob(
 						[ivBytes, new Uint8Array ( cipherText ) ],
 						{type: "application/octet-stream"}
 					);
-					var blobUrl = URL.createObjectURL(blob);
-					
-					var element = document.createElement ( 'a' );
-					element.setAttribute( 'href', blobUrl );
-					element.setAttribute( 'download', 'Data' );
-					element.style.display = 'none';
-					document.body.appendChild ( element );
-					element.click ( );
-					document.body.removeChild ( element );
-					window.URL.revokeObjectURL ( blobUrl );
-				},
-				m_ErrorHandler
-			)
-			.catch ( m_ErrorHandler );
-		};
-		
-		/*
-		--- m_ReadDataFromFile function -------------------------------------------------------------------------------
-		
-		---------------------------------------------------------------------------------------------------------------
-		*/
-
-		var m_ReadDataFromFile = function ( file, onOk ) {
-			var fileReader = new FileReader( );
-			fileReader.onload = function ( event ) {
-				m_FileContent =  fileReader.result;
-				new Promise ( m_PasswordDialog )
-				.then ( m_PasswordToKey, m_ErrorHandler )
-				.then ( m_DecryptData, m_ErrorHandler )
-				.then ( onOk )
-				.catch ( m_ErrorHandler );
-			};
-			fileReader.readAsArrayBuffer ( file );
-		};
-		
-		/*
-		--- m_ReadDataFromUrl function --------------------------------------------------------------------------------
-		
-		---------------------------------------------------------------------------------------------------------------
-		*/
-
-		var m_ReadDataFromUrl = function ( url, onOk ) {
-			var xmlHttpRequest = new XMLHttpRequest ( );
-			xmlHttpRequest.timeout = 15000;
-			
-			xmlHttpRequest.onload = function ( Event) {
-				var arrayBuffer = xmlHttpRequest.response;
-				if (arrayBuffer) {
-					m_FileContent = arrayBuffer;
-					new Promise ( m_PasswordDialog )
-					.then ( m_PasswordToKey, m_ErrorHandler )
-					.then ( m_DecryptData, m_ErrorHandler )
-					.then ( onOk )
-					.catch ( m_ErrorHandler );
+					m_OnOk ( blob );
 				}
-			};
-
-			xmlHttpRequest.open ( "GET", url, true );
-			xmlHttpRequest.responseType = "arraybuffer";
-			xmlHttpRequest.send ( null );
-		
+			)
+			.catch ( m_OnError );
 		};
-		
-		
+
 		/*
-		--- m_WriteDataToFile function --------------------------------------------------------------------------------
+		--- m_Encrypt object ------------------------------------------------------------------------------------------
 		
 		---------------------------------------------------------------------------------------------------------------
 		*/
 
-		var m_WriteDataToFile = function ( data ) {
+		var m_Encrypt = function ( data, onOk, onError, pswdPromise ) {
+
 			m_Data = data;
-			new Promise ( m_PasswordDialog )
-			.then ( m_PasswordToKey, m_ErrorHandler )
-			.then ( m_EncryptData, m_ErrorHandler )
-			.catch ( m_ErrorHandler	);
+			m_OnError = onError;
+			m_OnOk = onOk;
+			
+			pswdPromise
+			.then ( m_PswdToKey )
+			.then ( m_EncryptData )
+			.catch ( onError );
 		};
 		
 		/*
@@ -252,15 +174,8 @@ Tests :
 
 		return Object.seal ( 
 			{
-				readDataFromUrl : function ( url, onOk ) { m_ReadDataFromUrl ( url, onOk ); },
-				readDataFromFile : function ( file, onOk ) { m_ReadDataFromFile ( file, onOk ); },
-				writeDataToFile : function ( data ) { m_WriteDataToFile ( data ); },
-				set passwordDialog ( PasswordDialog ) { m_PasswordDialog = PasswordDialog; },
-				get passwordDialog ( ) { return null; },
-				set errorHandler ( ErrorHandler ) { m_ErrorHandler = ErrorHandler;},
-				get errorHandler ( ) { return null; },
-				set okHandler ( OkHandler ) { m_OkHandler = OkHandler; },
-				get okHandler ( ) { return null; }
+				encrypt : function ( data, onOk, onError, pswdPromise ) { m_Encrypt ( data, onOk, onError, pswdPromise ); },
+				decrypt : function ( data, onOk, onError, pswdPromise ) { m_Decrypt ( data, onOk, onError, pswdPromise ); }
 			}
 		);
 	};
