@@ -202,6 +202,35 @@ Tests :
 		};
 		
 		/*
+		--- m_ReadDataFromUrl function --------------------------------------------------------------------------------
+		
+		---------------------------------------------------------------------------------------------------------------
+		*/
+
+		var m_ReadDataFromUrl = function ( url, onOk ) {
+			var xmlHttpRequest = new XMLHttpRequest ( );
+			xmlHttpRequest.timeout = 15000;
+			
+			xmlHttpRequest.onload = function ( Event) {
+				var arrayBuffer = xmlHttpRequest.response;
+				if (arrayBuffer) {
+					m_FileContent = arrayBuffer;
+					new Promise ( m_PasswordDialog )
+					.then ( m_PasswordToKey, m_ErrorHandler )
+					.then ( m_DecryptData, m_ErrorHandler )
+					.then ( onOk )
+					.catch ( m_ErrorHandler );
+				}
+			};
+
+			xmlHttpRequest.open ( "GET", url, true );
+			xmlHttpRequest.responseType = "arraybuffer";
+			xmlHttpRequest.send ( null );
+		
+		};
+		
+		
+		/*
 		--- m_WriteDataToFile function --------------------------------------------------------------------------------
 		
 		---------------------------------------------------------------------------------------------------------------
@@ -223,6 +252,7 @@ Tests :
 
 		return Object.seal ( 
 			{
+				readDataFromUrl : function ( url, onOk ) { m_ReadDataFromUrl ( url, onOk ); },
 				readDataFromFile : function ( file, onOk ) { m_ReadDataFromFile ( file, onOk ); },
 				writeDataToFile : function ( data ) { m_WriteDataToFile ( data ); },
 				set passwordDialog ( PasswordDialog ) { m_PasswordDialog = PasswordDialog; },

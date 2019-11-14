@@ -30,7 +30,7 @@ Tests :
 
 	'use strict';
 	
-	var m_dataEncryptor = require ( './DataEncryptor' ) ( );
+	var dataEncryptor = require ( './DataEncryptor' ) ( );
 
 	/*
 	--- okHandler function --------------------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ Tests :
 		pswdMainDiv.innerHTML = "";
 		pswdMainDiv.style.visibility = "hidden";
 	};
-	m_dataEncryptor.okHandler = okHandler;
+	dataEncryptor.okHandler = okHandler;
 
 	/*
 	--- errorHandler function -----------------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ Tests :
 		document.getElementById ( "errorDiv" ).innerHTML = "An error occurs...";
 		console.log ( err );
 	};
-	m_dataEncryptor.errorHandler = errorHandler;
+	dataEncryptor.errorHandler = errorHandler;
 
 	/*
 	--- pswdDialog function -------------------------------------------------------------------------------------------
@@ -67,13 +67,13 @@ Tests :
 	*/
 
 	var pswdDialog = function ( returnOnOk, returnOnCancel ) {
+		
 		var pswdMainDiv = document.getElementById ( "pswdMainDiv" );
 		pswdMainDiv.style.visibility = "visible";
 		pswdMainDiv.innerHTML = '<div id="pswdDiv"> <div> <label id="pswdLbl" for="pswd">Password&nbsp;:&nbsp;</label> <input type="password" id="pswdInput"> </div> <div id="buttonDiv"> <input type="button" value="Ok" id="okButton" /> <input type="button" value="Cancel" id="cancelButton" /> </div> <div id="errorPsw">The password must be at least 12 characters long and contain at least one capital, one lowercase, one number, and one other character.</div></div>';
 		document.getElementById ( "pswdInput" ).focus ( );
 		
 		var onOkClick = function ( ) {
-			document.removeEventListener ( 'keydown', onKeyDown, true );
 			var pswd = document.getElementById ( "pswdInput" ).value;
 			if ( ( pswd.length < 12 ) || ! pswd.match ( RegExp( '[0-9]+' ) )|| ! pswd.match ( RegExp( '[a-z]+' ) )|| ! pswd.match ( RegExp( '[A-Z]+' ) ) || ! pswd.match ( RegExp( '[^0-9a-zA-Z]' ) ) ) {
 				document.getElementById ( "pswdInput" ).focus ( );
@@ -89,7 +89,6 @@ Tests :
 		var onCancelClick = function ( ) {
 			document.getElementById ( "okButton" ).removeEventListener ( "click", onOkClick );
 			document.getElementById ( "cancelButton" ).removeEventListener ( "click", onCancelClick );
-			document.removeEventListener ( 'keydown', onKeyDown, true );
 			pswdMainDiv.innerHTML = "";
 			returnOnCancel ( );
 		};
@@ -103,10 +102,8 @@ Tests :
 				document.getElementById ( "okButton" ).click ( );
 			}
 		};
-		
-		document.addEventListener ( 'keydown', onKeyDown, true );
 	};
-	m_dataEncryptor.passwordDialog = pswdDialog;
+	dataEncryptor.passwordDialog = pswdDialog;
 	
 	/*
 	--- saveDecryptedDataToFile function ------------------------------------------------------------------------------
@@ -117,7 +114,6 @@ Tests :
 	function saveDecryptedDataToFile ( decryptedData ) {
 		
 		var dataObject = JSON.parse ( new TextDecoder().decode ( decryptedData ) );
-		
 		var tmpArray = [];
 		for ( var property in dataObject.data ) {
 		  tmpArray.push ( dataObject.data [ property ] );
@@ -125,20 +121,43 @@ Tests :
 		
 		var blob = new Blob(
 			[new Uint8Array ( tmpArray ) ],
-			{type: "application/octet-stream"}
+			{type: dataObject.type}
 		);
 		var blobUrl = URL.createObjectURL(blob);
 		
 		var element = document.createElement ( 'a' );
 		element.setAttribute( 'href', blobUrl );
-		element.setAttribute( 'download', dataObject.name );
+		if ( -1 === [ "application/pdf", "text/html", "image/jpeg", "image/png" ].indexOf ( dataObject.type ) ) {
+			element.setAttribute( 'download', dataObject.name );
+		}
 		element.style.display = 'none';
 		document.body.appendChild ( element );
 		element.click ( );
 		document.body.removeChild ( element );
 		window.URL.revokeObjectURL ( blobUrl );
 	}
+	
+	/*
+	--- onKeyDownUrl function -----------------------------------------------------------------------------------------
 
+	-------------------------------------------------------------------------------------------------------------------
+	*/
+
+	function onKeyDown ( keyBoardEvent ) {
+		if ( 'Enter' === keyBoardEvent.key && 'urlDecrypt' === keyBoardEvent.target.id ) {
+			dataEncryptor.readDataFromUrl ( keyBoardEvent.target.value, saveDecryptedDataToFile );
+		}
+		if ( 'pswdInput' === keyBoardEvent.target.id ) {
+			if ( 'Escape' === keyBoardEvent.key || 'Esc' === keyBoardEvent.key ) {
+				document.getElementById ( "cancelButton" ).click ( );
+			}
+			else if ( 'Enter' === keyBoardEvent.key ) {
+				document.getElementById ( "okButton" ).click ( );
+			}
+		}
+	}
+	document.addEventListener ( 'keydown', onKeyDown, true );
+	
 	/*
 	--- decrypt button event ------------------------------------------------------------------------------------------
 
@@ -149,7 +168,7 @@ Tests :
 		"change",
 		function ( event ) {
 			document.getElementById ( "errorDiv" ).innerHTML = "";
-			m_dataEncryptor.readDataFromFile( event.target.files [ 0 ], saveDecryptedDataToFile );
+			dataEncryptor.readDataFromFile( event.target.files [ 0 ], saveDecryptedDataToFile );
 		}
 	);
 
@@ -165,13 +184,15 @@ Tests :
 			document.getElementById ( "errorDiv" ).innerHTML = "";
 			var fileReader = new FileReader( );
 			var fileName = event.target.files [ 0 ].name;
+			var fileType = event.target.files [ 0 ].type;
 			fileReader.onload = function ( event ) {
-				m_dataEncryptor.writeDataToFile (
+				dataEncryptor.writeDataToFile (
 					new window.TextEncoder ( ).encode ( 
 						JSON.stringify ( 
 							{				
 								data : new Uint8Array ( fileReader.result ),
-								name : fileName
+								name : fileName,
+								type : fileType
 							} 
 						)
 					)
@@ -181,7 +202,20 @@ Tests :
 		}
 	);
 	
-	
+	/*
+	--- Reading url ---------------------------------------------------------------------------------------------------
+
+	-------------------------------------------------------------------------------------------------------------------
+	*/
+
+	var searchString = decodeURI ( window.location.search ).substr ( 1 );
+	if ( 'fil=' === searchString.substr ( 0, 4 ).toLowerCase ( ) ) {
+		console.log ( decodeURIComponent ( escape ( atob ( searchString.substr ( 4 ) ) ) ) );
+		dataEncryptor.readDataFromUrl ( 
+			decodeURIComponent ( escape ( atob ( searchString.substr ( 4 ) ) ) ), 
+			saveDecryptedDataToFile
+		);
+	}
 
 } ) ( );
 
