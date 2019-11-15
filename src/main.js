@@ -31,6 +31,7 @@ Tests :
 	'use strict';
 	
 	var dataEncryptor = require ( './DataEncryptor' ) ( );
+	var action = '';
 	
 	/*
 	--- restoreInterface function -------------------------------------------------------------------------------------
@@ -130,7 +131,11 @@ Tests :
 		
 		var pswdMainDiv = document.getElementById ( "pswdMainDiv" );
 		pswdMainDiv.style.visibility = "visible";
-		pswdMainDiv.innerHTML = '<div id="pswdDiv"> <div> <label id="pswdLbl" for="pswd">Password&nbsp;:&nbsp;</label> <input type="password" id="pswdInput"> </div> <div id="buttonDiv"> <input type="button" value="Ok" id="okButton" /> <input type="button" value="Cancel" id="cancelButton" /> </div> <div id="errorPsw">The password must be at least 12 characters long and contain at least one capital, one lowercase, one number, and one other character.</div></div>';
+		pswdMainDiv.innerHTML = '<div id="pswdDiv"> <div> <label id="pswdLbl" for="pswd">Password&nbsp;:&nbsp;</label> <input type="password" id="pswdInput"> </div> <div id="buttonDiv"> <input type="button" value="Ok" id="okButton" /> <input type="button" value="Cancel" id="cancelButton" /> </div> <div id="errorPsw"></div></div>';
+		document.getElementById ( 'errorPsw' ).innerHTML = 
+			action === 'Decrypt' ?
+				'Type the password used for encryption' :
+				'The password must be at least 12 characters long and contain at least one capital, one lowercase, one number, and one other character.';
 		document.getElementById ( "pswdInput" ).focus ( );
 		
 		/*
@@ -208,6 +213,7 @@ Tests :
 
 	function onKeyDown ( keyBoardEvent ) {
 		if ( 'Enter' === keyBoardEvent.key && 'urlDecrypt' === keyBoardEvent.target.id ) {
+			action = 'Decrypt';
 			decryptUrl ( keyBoardEvent.target.value );
 		}
 		if ( 'pswdInput' === keyBoardEvent.target.id ) {
@@ -228,6 +234,7 @@ Tests :
 	*/
 
 	function onEncryptButtonChange ( event ) {
+		action = 'Encrypt';
 		document.getElementById ( "errorDiv" ).innerHTML = "";
 		var fileReader = new FileReader( );
 		var fileName = event.target.files [ 0 ].name;
@@ -259,6 +266,7 @@ Tests :
 	*/
 
 	function onDecryptButtonChange ( event ) {
+		action = 'Decrypt';
 		document.getElementById ( "errorDiv" ).innerHTML = "";
 		var fileReader = new FileReader( );
 		fileReader.onload = function ( event ) {
@@ -281,6 +289,7 @@ Tests :
 
 	function onGoButton ( event )
 	{
+		action = 'Decrypt';
 		document.getElementById ( "errorDiv" ).innerHTML = "";
 		decryptUrl ( document.getElementById ( "urlDecrypt" ).value );
 	}
@@ -294,6 +303,7 @@ Tests :
 
 	var searchString = decodeURI ( window.location.search ).substr ( 1 );
 	if ( 'fil=' === searchString.substr ( 0, 4 ).toLowerCase ( ) ) {
+		action = 'Decrypt';
 		decryptUrl ( decodeURIComponent ( escape ( atob ( searchString.substr ( 4 ) ) ) ) );
 	}
 
