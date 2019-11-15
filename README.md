@@ -19,6 +19,7 @@ Simple HTML page for encrypting and decrypting a file with a password.
 add "?fil=" followed by the file url base 64 encoded to the EncryptDecrypt url. 
 
 Sample : [https://wwwouaiebe.github.io/EncryptDecrypt/?fil=aHR0cHM6Ly93d3dvdWFpZWJlLmdpdGh1Yi5pby9FbmNyeXB0RGVjcnlwdC9zYW1wbGUuZW5j](https://wwwouaiebe.github.io/EncryptDecrypt/?fil=aHR0cHM6Ly93d3dvdWFpZWJlLmdpdGh1Yi5pby9FbmNyeXB0RGVjcnlwdC9zYW1wbGUuZW5j)
+
 The password is (Mush1544room)
 
 ## What if I forgott the password
