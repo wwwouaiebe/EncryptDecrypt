@@ -179,14 +179,19 @@ Tests :
 		var xmlHttpRequest = new XMLHttpRequest ( );
 		xmlHttpRequest.timeout = 15000;
 		xmlHttpRequest.onload = function ( event ) {
-			var arrayBuffer = xmlHttpRequest.response;
-			if ( arrayBuffer ) {
-				dataEncryptor.decryptData (
-					arrayBuffer,		
-					onDecryptOk,
-					onError,
-					new Promise ( pswdDialog )
-				);
+			if ( 200 === xmlHttpRequest.status ) {
+				var arrayBuffer = xmlHttpRequest.response;
+				if ( arrayBuffer ) {
+					dataEncryptor.decryptData (
+						arrayBuffer,		
+						onDecryptOk,
+						onError,
+						new Promise ( pswdDialog )
+					);
+				}
+			}
+			else {
+				onError ( new Error ( 'Invalid url' ) );
 			}
 		};
 
@@ -253,7 +258,7 @@ Tests :
 	-------------------------------------------------------------------------------------------------------------------
 	*/
 
-	var onDecryptButtonChange = function ( event ) {
+	function onDecryptButtonChange ( event ) {
 		document.getElementById ( "errorDiv" ).innerHTML = "";
 		var fileReader = new FileReader( );
 		fileReader.onload = function ( event ) {
@@ -265,9 +270,22 @@ Tests :
 			);
 		};
 		fileReader.readAsArrayBuffer ( event.target.files [ 0 ] );
-	};
+	}
 	document.getElementById ( "decryptButton" ).addEventListener ( "change", onDecryptButtonChange );
 	
+	/*
+	--- onGoButton function -------------------------------------------------------------------------------------------
+
+	-------------------------------------------------------------------------------------------------------------------
+	*/
+
+	function onGoButton ( event )
+	{
+		document.getElementById ( "errorDiv" ).innerHTML = "";
+		decryptUrl ( document.getElementById ( "urlDecrypt" ).value );
+	}
+	document.getElementById ( 'goButton' ).addEventListener ( "click", onGoButton );
+
 	/*
 	--- Reading url ---------------------------------------------------------------------------------------------------
 
