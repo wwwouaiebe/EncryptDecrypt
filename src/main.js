@@ -178,7 +178,7 @@ Tests :
 		xmlHttpRequest.onload = function ( Event) {
 			var arrayBuffer = xmlHttpRequest.response;
 			if ( arrayBuffer ) {
-				dataEncryptor.decrypt (
+				dataEncryptor.decryptData (
 					arrayBuffer,		
 					onDecryptOk,
 					onError,
@@ -225,7 +225,7 @@ Tests :
 		var fileName = event.target.files [ 0 ].name;
 		var fileType = event.target.files [ 0 ].type;
 		fileReader.onload = function ( event ) {
-			dataEncryptor.encrypt (
+			dataEncryptor.encryptData (
 				new window.TextEncoder ( ).encode ( 
 					JSON.stringify ( 
 						{				
@@ -254,7 +254,7 @@ Tests :
 		document.getElementById ( "errorDiv" ).innerHTML = "";
 		var fileReader = new FileReader( );
 		fileReader.onload = function ( event ) {
-			dataEncryptor.decrypt (
+			dataEncryptor.decryptData (
 				fileReader.result,		
 				onDecryptOk,
 				onError,

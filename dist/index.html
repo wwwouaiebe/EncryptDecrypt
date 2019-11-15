@@ -20,7 +20,7 @@
 		<div id="errorDiv" class="red">
 		</div>
 		<script>
-			/*! encryptdecript - version 1.0.0 - build 0242 - 2019-11-14 - Copyright 2019 2019 wwwouaiebe - Contact: http//www.ouaie.be/ - This  program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or any later version.*/
+			/*! encryptdecript - version 1.0.0 - build 0255 - 2019-11-15 - Copyright 2019 2019 wwwouaiebe - Contact: http//www.ouaie.be/ - This  program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or any later version.*/
 
 
 			!function r(e, n, t) {
@@ -49,50 +49,49 @@
 			        !function() {
 			            "use strict";
 			            void 0 !== module && module.exports && (module.exports = function() {
-			                function m_PswdToKey(pswd) {
+			                function m_ImportKey(pswd) {
 			                    return window.crypto.subtle.importKey("raw", pswd, {
 			                        name: "PBKDF2"
-			                    }, !1, [ "deriveKey" ]).then(function(deriveKey) {
-			                        return window.crypto.subtle.deriveKey({
-			                            name: "PBKDF2",
-			                            salt: new window.TextEncoder().encode("Tire la chevillette la bobinette cherra. Le Petit Chaperon rouge tira la chevillette."),
-			                            iterations: 1e6,
-			                            hash: "SHA-256"
-			                        }, deriveKey, {
+			                    }, !1, [ "deriveKey" ]);
+			                }
+			                function m_DeriveKey(deriveKey) {
+			                    return window.crypto.subtle.deriveKey({
+			                        name: "PBKDF2",
+			                        salt: new window.TextEncoder().encode("Tire la chevillette la bobinette cherra. Le Petit Chaperon rouge tira la chevillette."),
+			                        iterations: 1e6,
+			                        hash: "SHA-256"
+			                    }, deriveKey, {
+			                        name: "AES-GCM",
+			                        length: 256
+			                    }, !1, [ "encrypt", "decrypt" ]);
+			                }
+			                function m_DecryptData(data, onOk, onError, pswdPromise) {
+			                    pswdPromise.then(m_ImportKey).then(m_DeriveKey).then(function(decryptKey) {
+			                        return window.crypto.subtle.decrypt({
 			                            name: "AES-GCM",
-			                            length: 256
-			                        }, !1, [ "encrypt", "decrypt" ]);
-			                    });
+			                            iv: new Uint8Array(data.slice(0, 16))
+			                        }, decryptKey, new Uint8Array(data.slice(16)));
+			                    }).then(onOk).catch(onError);
 			                }
-			                function m_DecryptData(decryptKey) {
-			                    return window.crypto.subtle.decrypt({
-			                        name: "AES-GCM",
-			                        iv: new Uint8Array(m_Data.slice(0, 16))
-			                    }, decryptKey, new Uint8Array(m_Data.slice(16)));
-			                }
-			                function m_EncryptData(encryptKey) {
+			                function m_EncryptData(data, onOk, onError, pswdPromise) {
 			                    var ivBytes = window.crypto.getRandomValues(new Uint8Array(16));
-			                    window.crypto.subtle.encrypt({
-			                        name: "AES-GCM",
-			                        iv: ivBytes
-			                    }, encryptKey, m_Data).then(function(cipherText) {
-			                        var blob = new Blob([ ivBytes, new Uint8Array(cipherText) ], {
+			                    pswdPromise.then(m_ImportKey).then(m_DeriveKey).then(function(encryptKey) {
+			                        return window.crypto.subtle.encrypt({
+			                            name: "AES-GCM",
+			                            iv: ivBytes
+			                        }, encryptKey, data);
+			                    }).then(function(cipherText) {
+			                        onOk(new Blob([ ivBytes, new Uint8Array(cipherText) ], {
 			                            type: "application/octet-stream"
-			                        });
-			                        m_OnOk(blob);
-			                    });
+			                        }));
+			                    }).catch(onError);
 			                }
-			                var m_Data = null, m_OnOk = null;
 			                return Object.seal({
-			                    encrypt: function(data, onOk, onError, pswdPromise) {
-			                        !function(data, onOk, onError, pswdPromise) {
-			                            m_Data = data, m_OnOk = onOk, pswdPromise.then(m_PswdToKey).then(m_EncryptData).catch(onError);
-			                        }(data, onOk, onError, pswdPromise);
+			                    encryptData: function(data, onOk, onError, pswdPromise) {
+			                        m_EncryptData(data, onOk, onError, pswdPromise);
 			                    },
-			                    decrypt: function(data, onOk, onError, pswdPromise) {
-			                        !function(data, onOk, onError, pswdPromise) {
-			                            m_Data = data, pswdPromise.then(m_PswdToKey).then(m_DecryptData).then(onOk).catch(onError);
-			                        }(data, onOk, onError, pswdPromise);
+			                    decryptData: function(data, onOk, onError, pswdPromise) {
+			                        m_DecryptData(data, onOk, onError, pswdPromise);
 			                    }
 			                });
 			            });
@@ -156,7 +155,7 @@
 			                var xmlHttpRequest = new XMLHttpRequest();
 			                xmlHttpRequest.timeout = 15e3, xmlHttpRequest.onload = function(Event) {
 			                    var arrayBuffer = xmlHttpRequest.response;
-			                    arrayBuffer && dataEncryptor.decrypt(arrayBuffer, onDecryptOk, onError, new Promise(pswdDialog));
+			                    arrayBuffer && dataEncryptor.decryptData(arrayBuffer, onDecryptOk, onError, new Promise(pswdDialog));
 			                }, xmlHttpRequest.open("GET", url, !0), xmlHttpRequest.responseType = "arraybuffer", 
 			                xmlHttpRequest.send(null);
 			            }
@@ -169,7 +168,7 @@
 			                document.getElementById("errorDiv").innerHTML = "";
 			                var fileReader = new FileReader(), fileName = event.target.files[0].name, fileType = event.target.files[0].type;
 			                fileReader.onload = function(event) {
-			                    dataEncryptor.encrypt(new window.TextEncoder().encode(JSON.stringify({
+			                    dataEncryptor.encryptData(new window.TextEncoder().encode(JSON.stringify({
 			                        data: new Uint8Array(fileReader.result),
 			                        name: fileName,
 			                        type: fileType
@@ -180,7 +179,7 @@
 			                document.getElementById("errorDiv").innerHTML = "";
 			                var fileReader = new FileReader();
 			                fileReader.onload = function(event) {
-			                    dataEncryptor.decrypt(fileReader.result, onDecryptOk, onError, new Promise(pswdDialog));
+			                    dataEncryptor.decryptData(fileReader.result, onDecryptOk, onError, new Promise(pswdDialog));
 			                }, fileReader.readAsArrayBuffer(event.target.files[0]);
 			            });
 			            var searchString = decodeURI(window.location.search).substr(1);

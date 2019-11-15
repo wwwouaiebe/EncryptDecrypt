@@ -36,124 +36,130 @@ Tests :
 	-------------------------------------------------------------------------------------------------------------------
 	*/
 
-	var dataEncryptor = function ( ) {
-		
-		var m_Data = null;
-		
-		var m_OnOk = null;
+	function dataEncryptor ( ) {
 		
 		/*
-		--- m_PswdToKey function --------------------------------------------------------------------------------------
+		--- m_ImportKey function --------------------------------------------------------------------------------------
 		
 		---------------------------------------------------------------------------------------------------------------
 		*/
 
-		var m_PswdToKey = function ( pswd ) {
+		function m_ImportKey ( pswd ) {
 			return window.crypto.subtle.importKey (
 				"raw", 
 				pswd, 
 				{ name: "PBKDF2" }, 
 				false, 
 				[ "deriveKey" ]
-			)
-			.then ( 
-				function ( deriveKey ) {
-					return window.crypto.subtle.deriveKey (
-						{
-							name: "PBKDF2", 
-							salt: new window.TextEncoder ( ).encode ( "Tire la chevillette la bobinette cherra. Le Petit Chaperon rouge tira la chevillette." ), 
-							iterations: 1000000, 
-							hash: "SHA-256"
-						},
-						deriveKey,
-						{
-							name: "AES-GCM", 
-							length: 256
-							},
-						false,
-						[ "encrypt", "decrypt" ]
-					);
-				}
 			);
-		};
-
+		}
+		
 		/*
-		--- m_DecryptData function ------------------------------------------------------------------------------------
+		--- m_DeriveKey function --------------------------------------------------------------------------------------
 		
 		---------------------------------------------------------------------------------------------------------------
 		*/
 
-		var m_DecryptData = function ( decryptKey ) {
-			return window.crypto.subtle.decrypt (
+		function m_DeriveKey ( deriveKey ) {
+			return window.crypto.subtle.deriveKey (
+				{
+					name: "PBKDF2", 
+					salt: new window.TextEncoder ( ).encode ( "Tire la chevillette la bobinette cherra. Le Petit Chaperon rouge tira la chevillette." ), 
+					iterations: 1000000, 
+					hash: "SHA-256"
+				},
+				deriveKey,
 				{
 					name: "AES-GCM", 
-					iv: new Uint8Array ( m_Data.slice ( 0, 16 ) )
-				}, 
-				decryptKey, 
-				new Uint8Array ( m_Data.slice ( 16 ) )
+					length: 256
+				},
+				false,
+				[ "encrypt", "decrypt" ]
 			);
-		};
+		}
 
 		/*
-		--- m_Encrypt object ------------------------------------------------------------------------------------------
+		--- m_EncryptData object --------------------------------------------------------------------------------------
 		
 		---------------------------------------------------------------------------------------------------------------
 		*/
 
-		var m_Decrypt = function ( data, onOk, onError, pswdPromise ) {
+		function m_DecryptData ( data, onOk, onError, pswdPromise ) {
 
-			m_Data = data;
+			/*
+			--- decrypt function --------------------------------------------------------------------------------------
+			
+			-----------------------------------------------------------------------------------------------------------
+			*/
+			
+			function decrypt ( decryptKey ) {
+				return window.crypto.subtle.decrypt (
+					{
+						name: "AES-GCM", 
+						iv: new Uint8Array ( data.slice ( 0, 16 ) )
+					}, 
+					decryptKey, 
+					new Uint8Array ( data.slice ( 16 ) )
+				);
+			}
 
 			pswdPromise
-			.then ( m_PswdToKey )
-			.then ( m_DecryptData )
+			.then ( m_ImportKey )
+			.then ( m_DeriveKey )
+			.then ( decrypt )
 			.then ( onOk )
 			.catch ( onError );
-		};
+		}
 		
 		/*
-		--- m_EncryptData function ------------------------------------------------------------------------------------
+		--- m_EncryptData object --------------------------------------------------------------------------------------
 		
 		---------------------------------------------------------------------------------------------------------------
 		*/
-		
-		var m_EncryptData = function ( encryptKey ) {
+
+		function m_EncryptData ( data, onOk, onError, pswdPromise ) {
+			
 			var ivBytes = window.crypto.getRandomValues ( new Uint8Array ( 16 ) );
-			window.crypto.subtle.encrypt(
-				{
-					name: "AES-GCM", 
-					iv: ivBytes
-				},
-				encryptKey,
-				m_Data
-			)
-			.then ( 
-				function ( cipherText ) {
-					var blob =  new Blob(
+
+			/*
+			--- encrypt function --------------------------------------------------------------------------------------
+			
+			-----------------------------------------------------------------------------------------------------------
+			*/
+			
+			function encrypt ( encryptKey ) {
+				return window.crypto.subtle.encrypt(
+					{
+						name: "AES-GCM", 
+						iv: ivBytes
+					},
+					encryptKey,
+					data
+				);
+			}
+			
+			/*
+			--- returnValue function --------------------------------------------------------------------------------------
+			
+			-----------------------------------------------------------------------------------------------------------
+			*/
+
+			function returnValue ( cipherText ) {
+				onOk ( 
+					new Blob(
 						[ivBytes, new Uint8Array ( cipherText ) ],
 						{type: "application/octet-stream"}
-					);
-					m_OnOk ( blob );
-				}
-			);
-		};
-
-		/*
-		--- m_Encrypt object ------------------------------------------------------------------------------------------
-		
-		---------------------------------------------------------------------------------------------------------------
-		*/
-
-		var m_Encrypt = function ( data, onOk, onError, pswdPromise ) {
-
-			m_Data = data;
-			m_OnOk = onOk;
-			
+					)
+				);
+			}
+						
 			pswdPromise
-			.then ( m_PswdToKey )
-			.then ( m_EncryptData )
+			.then ( m_ImportKey )
+			.then ( m_DeriveKey )
+			.then ( encrypt )
+			.then ( returnValue )
 			.catch ( onError );
-		};
+		}
 		
 		/*
 		--- dataEncryptor object --------------------------------------------------------------------------------------
@@ -163,11 +169,11 @@ Tests :
 
 		return Object.seal ( 
 			{
-				encrypt : function ( data, onOk, onError, pswdPromise ) { m_Encrypt ( data, onOk, onError, pswdPromise ); },
-				decrypt : function ( data, onOk, onError, pswdPromise ) { m_Decrypt ( data, onOk, onError, pswdPromise ); }
+				encryptData : function ( data, onOk, onError, pswdPromise ) { m_EncryptData ( data, onOk, onError, pswdPromise ); },
+				decryptData : function ( data, onOk, onError, pswdPromise ) { m_DecryptData ( data, onOk, onError, pswdPromise ); }
 			}
 		);
-	};
+	}
 	
 	/*
 	--- Exports -------------------------------------------------------------------------------------------------------
