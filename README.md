@@ -2,6 +2,11 @@
 
 Simple HTML page for encrypting and decrypting a file with a password.
 
+## Warning
+
+- For security reasons, this page works only with the HTTPS protocol. 
+- This page don't work with MS Edge because crypto functions are not correct in MS Edge.
+
 ## Encrypting a file
 
 - Select a file with the encrypt button.
