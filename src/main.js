@@ -302,17 +302,77 @@ Tests :
 	document.getElementById ( 'goButton' ).addEventListener ( "click", onGoButton );
 
 	/*
-	--- Reading url ---------------------------------------------------------------------------------------------------
+	--- testCryptoPromise function ------------------------------------------------------------------------------------
 
 	-------------------------------------------------------------------------------------------------------------------
 	*/
 
-	var searchString = decodeURI ( window.location.search ).substr ( 1 );
-	if ( 'fil=' === searchString.substr ( 0, 4 ).toLowerCase ( ) ) {
-		action = 'Decrypt';
-		showProcessing ( );
-		decryptUrl ( decodeURIComponent ( escape ( atob ( searchString.substr ( 4 ) ) ) ) );
+	function testCryptoPromise ( ) {
+
+		// MS Edge @#?£$ don't know Promise.allSettled and Promise.reject correctly, so we need to always
+		// return Promise.resolve and test the return value in Promise.then...
+
+		if ( 'https:' !== window.location.protocol.toLowerCase ( ) ) {
+			return Promise.resolve ( false );
+		}
+		
+		if ( ! window.crypto || ! window.crypto.subtle || ! window.crypto.subtle.importKey ) {
+			return Promise.resolve ( false );
+		}
+
+		try {
+			return window.crypto.subtle.importKey (
+				'raw',
+				new window.TextEncoder ( ).encode ( 'hoho' ),
+				{ name : 'PBKDF2' },
+				false,
+				[ 'deriveKey' ]
+			);
+		}
+		catch ( err ) {
+			return Promise.resolve ( false );
+		}
+
 	}
+
+	/*
+	--- Reading url ---------------------------------------------------------------------------------------------------
+
+	-------------------------------------------------------------------------------------------------------------------
+	*/
+	
+	testCryptoPromise ( ) .then (
+		function ( haveCrypto ) {
+			if ( haveCrypto ) {
+				var searchString = decodeURI ( window.location.search ).substr ( 1 );
+				if ( 'fil=' === searchString.substr ( 0, 4 ).toLowerCase ( ) ) {
+					action = 'Decrypt';
+					showProcessing ( );
+					decryptUrl ( decodeURIComponent ( escape ( atob ( searchString.substr ( 4 ) ) ) ) );
+				}
+			}
+			else {
+				document.getElementById ( "errorDiv" ).innerHTML = 
+					"Not possible to use EncryptDecrypt. The page uses the HTTP protocol or your browser don't support cryptography functions";
+				document.getElementById ( "body" ).removeChild (
+					document.getElementById ( "EncryptDecrypt" ) );
+			}
+		}
+	)
+	.catch ( 
+		function ( err ) {
+			console.log ( err );
+			document.getElementById ( "errorDiv" ).innerHTML = 
+				"Not possible to use EncryptDecrypt. The page uses the HTTP protocol or your browser don't support cryptography functions";
+			document.getElementById ( "body" ).removeChild (
+				document.getElementById ( "EncryptDecrypt" ) );
+		}
+	
+	);
+	
+	
+	
+
 
 } ) ( );
 

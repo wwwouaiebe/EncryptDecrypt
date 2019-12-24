@@ -12,16 +12,18 @@
 			#copyright{position: absolute; bottom: 1em;left: 1em;}
 		</style>
 	</head>
-	<body>
-		<h3>Encrypt</h3>
-		<div>
-			<input type="file" id="encryptButton"/>
-		</div>
-		<h3>Decrypt</h3>
-		<div>
-			<input type="file" id="decryptButton"/><input type="url" id="urlDecrypt" placeholder="https://" size="128" /><input type="button" value="Go" id="goButton" />
-		</div>
-		<div id="pswdMainDiv">
+	<body id="body">
+		<div id="EncryptDecrypt" >
+			<h3>Encrypt</h3>
+			<div>
+				<input type="file" id="encryptButton"/>
+			</div>
+			<h3>Decrypt</h3>
+			<div>
+				<input type="file" id="decryptButton"/><input type="url" id="urlDecrypt" placeholder="https://" size="128" /><input type="button" value="Go" id="goButton" />
+			</div>
+			<div id="pswdMainDiv">
+			</div>
 		</div>
 		<div id="errorDiv" class="red">
 		</div>
