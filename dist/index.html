@@ -29,7 +29,7 @@
 		</div>
 		<div id="copyright"> <a target="_blank" href="https://github.com/wwwouaiebe/EncryptDecrypt/tree/gh-pages">© wwwouaiebe 2019</a></div>
 		<script>
-			/*! encryptdecript - version 1.0.0 - build 0284 - 2019-12-24 - Copyright 2019 2019 wwwouaiebe - Contact: http//www.ouaie.be/ - This  program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or any later version.*/
+			/*! encryptdecript - version 1.0.0 - build 0286 - 2019-12-27 - Copyright 2019 2019 wwwouaiebe - Contact: http//www.ouaie.be/ - This  program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or any later version.*/
 
 
 			!function r(e, n, t) {
@@ -166,14 +166,16 @@
 			                document.getElementById("cancelButton").addEventListener("click", onCancelClick);
 			            }
 			            function decryptUrl(url) {
-			                var xmlHttpRequest = new XMLHttpRequest();
-			                xmlHttpRequest.timeout = 15e3, xmlHttpRequest.onload = function(event) {
-			                    if (200 === xmlHttpRequest.status) {
-			                        var arrayBuffer = xmlHttpRequest.response;
-			                        arrayBuffer && dataEncryptor.decryptData(arrayBuffer, onDecryptOk, onError, new Promise(pswdDialog));
-			                    } else onError(new Error("Invalid url"));
-			                }, xmlHttpRequest.open("GET", url, !0), xmlHttpRequest.responseType = "arraybuffer", 
-			                xmlHttpRequest.send(null);
+			                if ("https" === url.substr(0, 5).toLowerCase()) {
+			                    var xmlHttpRequest = new XMLHttpRequest();
+			                    xmlHttpRequest.timeout = 15e3, xmlHttpRequest.onload = function(event) {
+			                        if (200 === xmlHttpRequest.status) {
+			                            var arrayBuffer = xmlHttpRequest.response;
+			                            arrayBuffer && dataEncryptor.decryptData(arrayBuffer, onDecryptOk, onError, new Promise(pswdDialog));
+			                        } else onError(new Error("Invalid url"));
+			                    }, xmlHttpRequest.open("GET", url, !0), xmlHttpRequest.responseType = "arraybuffer", 
+			                    xmlHttpRequest.send(null);
+			                } else onError(new Error("the given url don't use the https protocol: " + url));
 			            }
 			            document.addEventListener("keydown", function(keyBoardEvent) {
 			                "Enter" === keyBoardEvent.key && "urlDecrypt" === keyBoardEvent.target.id && (action = "Decrypt", 
@@ -197,7 +199,7 @@
 			            }), document.getElementById("goButton").addEventListener("click", function(event) {
 			                action = "Decrypt", document.getElementById("errorDiv").innerHTML = "", decryptUrl(document.getElementById("urlDecrypt").value);
 			            }), function() {
-			                if ("https:" !== window.location.protocol.toLowerCase()) return Promise.resolve(!1);
+			                if (!window.isSecureContext) return Promise.resolve(!1);
 			                if (!window.crypto || !window.crypto.subtle || !window.crypto.subtle.importKey) return Promise.resolve(!1);
 			                try {
 			                    return window.crypto.subtle.importKey("raw", new window.TextEncoder().encode("hoho"), {

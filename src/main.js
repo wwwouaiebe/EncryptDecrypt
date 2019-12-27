@@ -187,6 +187,10 @@ Tests :
 	*/
 
 	function decryptUrl ( url ) {
+		if ( 'https' !== url.substr ( 0, 5 ).toLowerCase ( ) ) {
+			onError ( new Error ( 'the given url don\'t use the https protocol: ' + url ) );
+			return;
+		}
 		var xmlHttpRequest = new XMLHttpRequest ( );
 		xmlHttpRequest.timeout = 15000;
 		xmlHttpRequest.onload = function ( event ) {
@@ -312,7 +316,7 @@ Tests :
 		// MS Edge @#?£$ don't know Promise.allSettled and Promise.reject correctly, so we need to always
 		// return Promise.resolve and test the return value in Promise.then...
 
-		if ( 'https:' !== window.location.protocol.toLowerCase ( ) ) {
+		if ( ! window.isSecureContext ) {
 			return Promise.resolve ( false );
 		}
 		
