@@ -15,13 +15,13 @@ Simple HTML page for encrypting and decrypting a file with a password.
 
 ## Decrypting a file
 
-- Select a file with the decrypt button or type the file url.
+- Select a file with the decrypt button or type the file url (the url must uses the https protocol).
 - Gives the password used for encryption.
 - Save the decrypted file. JPEG, PNG, PDF and HTML files are directly opened in the browser.
 
 ## lauch EncryptDecrypt and directly start decrypting a file
 
-add "?fil=" followed by the file url base 64 encoded to the EncryptDecrypt url. 
+add "?fil=" followed by the file url base 64 encoded to the EncryptDecrypt url. The url must uses the https protocol.
 
 Sample : [https://wwwouaiebe.github.io/EncryptDecrypt/?fil=aHR0cHM6Ly93d3dvdWFpZWJlLmdpdGh1Yi5pby9FbmNyeXB0RGVjcnlwdC9zYW1wbGUuZW5j](https://wwwouaiebe.github.io/EncryptDecrypt/?fil=aHR0cHM6Ly93d3dvdWFpZWJlLmdpdGh1Yi5pby9FbmNyeXB0RGVjcnlwdC9zYW1wbGUuZW5j)
 
@@ -39,5 +39,3 @@ Go to the [demo - en ](https://wwwouaiebe.github.io/EncryptDecrypt/)
 
 Simply download the project and copy the dist/index.html file to your computer or server.
 No others files needed. CSS and Javascript are included in the index.html file.
-
-Only tested with Firefox Nightly 72...
