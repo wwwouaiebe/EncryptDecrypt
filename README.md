@@ -39,5 +39,3 @@ Go to the [demo - en ](https://wwwouaiebe.github.io/EncryptDecrypt/)
 
 Simply download the project and copy the dist/index.html file to your computer or server.
 No others files needed. CSS and Javascript are included in the index.html file.
-
-Only tested with Firefox Nightly 72...
