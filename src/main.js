@@ -357,7 +357,7 @@ Tests :
 			}
 			else {
 				document.getElementById ( "errorDiv" ).innerHTML = 
-					"Not possible to use EncryptDecrypt. The page uses the HTTP protocol or your browser don't support cryptography functions";
+					"Not possible to use EncryptDecrypt. The page have unsecure context or your browser don't support cryptography functions";
 				document.getElementById ( "body" ).removeChild (
 					document.getElementById ( "EncryptDecrypt" ) );
 			}
@@ -367,7 +367,7 @@ Tests :
 		function ( err ) {
 			console.log ( err );
 			document.getElementById ( "errorDiv" ).innerHTML = 
-				"Not possible to use EncryptDecrypt. The page uses the HTTP protocol or your browser don't support cryptography functions";
+				"Not possible to use EncryptDecrypt. The page have unsecure context or your browser don't support cryptography functions";
 			document.getElementById ( "body" ).removeChild (
 				document.getElementById ( "EncryptDecrypt" ) );
 		}
