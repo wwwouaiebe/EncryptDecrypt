@@ -4,12 +4,6 @@ module.exports = function(grunt) {
 		jshint: {
 			files: ['Gruntfile.js', 'src/**/*.js'],
 		},
-		buildnumber: {
-			options: {
-				field: 'nextBuild',
-			},
-			files: ['package.json']
-		},
 		browserify: {
 			Default: {
 				src: ['src/main.js'],
@@ -59,7 +53,9 @@ module.exports = function(grunt) {
 		},
 		clean : ['tmp']
 	});
-	grunt.config.data.pkg.build = ("0000" + grunt.config.data.pkg.nextBuild).substr(-4,4) ;
+	grunt.config.data.pkg.buildNumber = grunt.file.readJSON('buildNumber.json').buildNumber;
+	grunt.config.data.pkg.buildNumber = ("00000" + ( Number.parseInt ( grunt.config.data.pkg.buildNumber ) + 1 )).substr ( -5, 5 ) ;
+	grunt.file.write ( 'buildNumber.json', '{ "buildNumber" : "' + grunt.config.data.pkg.buildNumber + '"}'  );
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-browserify');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -67,9 +63,9 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-build-number');
-	grunt.registerTask('default', ['jshint', 'buildnumber', 'browserify', 'uglify:Default', 'includes', 'copy', 'clean']);
-	grunt.registerTask('release', ['jshint', 'buildnumber', 'browserify', 'uglify:Release', 'includes', 'copy', 'clean']);
+	grunt.registerTask('default', ['jshint', 'browserify', 'uglify:Default', 'includes', 'copy', 'clean']);
+	grunt.registerTask('release', ['jshint', 'browserify', 'uglify:Release', 'includes', 'copy', 'clean']);
 	console.log ( '---------------------------------------------------------------------------------------------------------------------------------------------');
-	console.log ( '\n                                     ' + grunt.config.data.pkg.name + ' - ' + grunt.config.data.pkg.version +' - build: '+ grunt.config.data.pkg.build + ' - ' + grunt.template.today("isoDateTime") +'\n' );
+	console.log ( '\n                                     ' + grunt.config.data.pkg.name + ' - ' + grunt.config.data.pkg.version +' - build: '+ grunt.config.data.pkg.buildNumber + ' - ' + grunt.template.today("isoDateTime") +'\n' );
 	console.log ( '---------------------------------------------------------------------------------------------------------------------------------------------');
 };
