@@ -33,8 +33,7 @@ const PSWD_LENGTH = 12;
 const ZERO = 0;
 const ONE = 1;
 const FOUR = 4;
-
-// const FIVE = 5;
+const FIVE = 5;
 const HTTP_TIMEOUT = 15000;
 const HTTP_ERROR_OK = 200;
 
@@ -306,12 +305,10 @@ function pswdDialog ( onOkPassword, onCancelPassword ) {
 
 function decryptUrl ( url ) {
 
-	/*
 	if ( 'https' !== url.substr ( ZERO, FIVE ).toLowerCase ( ) ) {
 		onError ( new Error ( 'the given url don\'t use the https protocol: ' + url ) );
 		return;
 	}
-	*/
 
 	let xmlHttpRequest = new XMLHttpRequest ( );
 	xmlHttpRequest.timeout = HTTP_TIMEOUT;
