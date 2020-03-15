@@ -26,164 +26,162 @@ Tests :
 -----------------------------------------------------------------------------------------------------------------------
 */
 
-( function ( ) {
+/*
+--- dataEncryptor function ----------------------------------------------------------------------------------------
 
-	'use strict';
-	
+-------------------------------------------------------------------------------------------------------------------
+*/
+
+function dataEncryptor ( ) {
+
+	const ZERO = 0;
+	const SIXTEEN = 16;
+	const TWO_EXP_EIGHT = 256;
+	const TEN_EXP_SIX = 1000000;
+
 	/*
-	--- dataEncryptor function ----------------------------------------------------------------------------------------
+	--- myImportKey function --------------------------------------------------------------------------------------
 
-	-------------------------------------------------------------------------------------------------------------------
+	---------------------------------------------------------------------------------------------------------------
 	*/
 
-	function dataEncryptor ( ) {
-		
+	function myImportKey ( pswd ) {
+		return window.crypto.subtle.importKey (
+			'raw',
+			pswd,
+			{ name : 'PBKDF2' },
+			false,
+			[ 'deriveKey' ]
+		);
+	}
+
+	/*
+	--- myDeriveKey function --------------------------------------------------------------------------------------
+
+	---------------------------------------------------------------------------------------------------------------
+	*/
+
+	function myDeriveKey ( deriveKey ) {
+		return window.crypto.subtle.deriveKey (
+			{
+				name : 'PBKDF2',
+				salt : new window.TextEncoder ( ).encode (
+					'Tire la chevillette la bobinette cherra. Le Petit Chaperon rouge tira la chevillette.' ),
+				iterations : TEN_EXP_SIX,
+				hash : 'SHA-256'
+			},
+			deriveKey,
+			{
+				name : 'AES-GCM',
+				length : TWO_EXP_EIGHT
+			},
+			false,
+			[ 'encrypt', 'decrypt' ]
+		);
+	}
+
+	/*
+	--- myEncryptData object --------------------------------------------------------------------------------------
+
+	---------------------------------------------------------------------------------------------------------------
+	*/
+
+	function myDecryptData ( data, onOk, onError, pswdPromise ) {
+
 		/*
-		--- m_ImportKey function --------------------------------------------------------------------------------------
-		
-		---------------------------------------------------------------------------------------------------------------
+		--- decrypt function --------------------------------------------------------------------------------------
+
+		-----------------------------------------------------------------------------------------------------------
 		*/
 
-		function m_ImportKey ( pswd ) {
-			return window.crypto.subtle.importKey (
-				"raw", 
-				pswd, 
-				{ name: "PBKDF2" }, 
-				false, 
-				[ "deriveKey" ]
+		function decrypt ( decryptKey ) {
+			return window.crypto.subtle.decrypt (
+				{
+					name : 'AES-GCM',
+					iv : new Uint8Array ( data.slice ( ZERO, SIXTEEN ) )
+				},
+				decryptKey,
+				new Uint8Array ( data.slice ( SIXTEEN ) )
 			);
 		}
-		
-		/*
-		--- m_DeriveKey function --------------------------------------------------------------------------------------
-		
-		---------------------------------------------------------------------------------------------------------------
-		*/
 
-		function m_DeriveKey ( deriveKey ) {
-			return window.crypto.subtle.deriveKey (
-				{
-					name: "PBKDF2", 
-					salt: new window.TextEncoder ( ).encode ( "Tire la chevillette la bobinette cherra. Le Petit Chaperon rouge tira la chevillette." ), 
-					iterations: 1000000, 
-					hash: "SHA-256"
-				},
-				deriveKey,
-				{
-					name: "AES-GCM", 
-					length: 256
-				},
-				false,
-				[ "encrypt", "decrypt" ]
-			);
-		}
-
-		/*
-		--- m_EncryptData object --------------------------------------------------------------------------------------
-		
-		---------------------------------------------------------------------------------------------------------------
-		*/
-
-		function m_DecryptData ( data, onOk, onError, pswdPromise ) {
-
-			/*
-			--- decrypt function --------------------------------------------------------------------------------------
-			
-			-----------------------------------------------------------------------------------------------------------
-			*/
-			
-			function decrypt ( decryptKey ) {
-				return window.crypto.subtle.decrypt (
-					{
-						name: "AES-GCM", 
-						iv: new Uint8Array ( data.slice ( 0, 16 ) )
-					}, 
-					decryptKey, 
-					new Uint8Array ( data.slice ( 16 ) )
-				);
-			}
-
-			pswdPromise
-			.then ( m_ImportKey )
-			.then ( m_DeriveKey )
+		pswdPromise
+			.then ( myImportKey )
+			.then ( myDeriveKey )
 			.then ( decrypt )
 			.then ( onOk )
 			.catch ( onError );
-		}
-		
+	}
+
+	/*
+	--- myEncryptData object --------------------------------------------------------------------------------------
+
+	---------------------------------------------------------------------------------------------------------------
+	*/
+
+	function myEncryptData ( data, onOk, onError, pswdPromise ) {
+
+		let ivBytes = window.crypto.getRandomValues ( new Uint8Array ( SIXTEEN ) );
+
 		/*
-		--- m_EncryptData object --------------------------------------------------------------------------------------
-		
-		---------------------------------------------------------------------------------------------------------------
+		--- encrypt function --------------------------------------------------------------------------------------
+
+		-----------------------------------------------------------------------------------------------------------
 		*/
 
-		function m_EncryptData ( data, onOk, onError, pswdPromise ) {
-			
-			var ivBytes = window.crypto.getRandomValues ( new Uint8Array ( 16 ) );
+		function encrypt ( encryptKey ) {
+			return window.crypto.subtle.encrypt (
+				{
+					name : 'AES-GCM',
+					iv : ivBytes
+				},
+				encryptKey,
+				data
+			);
+		}
 
-			/*
-			--- encrypt function --------------------------------------------------------------------------------------
-			
-			-----------------------------------------------------------------------------------------------------------
-			*/
-			
-			function encrypt ( encryptKey ) {
-				return window.crypto.subtle.encrypt(
-					{
-						name: "AES-GCM", 
-						iv: ivBytes
-					},
-					encryptKey,
-					data
-				);
-			}
-			
-			/*
-			--- returnValue function --------------------------------------------------------------------------------------
-			
-			-----------------------------------------------------------------------------------------------------------
-			*/
+		/*
+		--- returnValue function --------------------------------------------------------------------------------------
 
-			function returnValue ( cipherText ) {
-				onOk ( 
-					new Blob(
-						[ivBytes, new Uint8Array ( cipherText ) ],
-						{type: "application/octet-stream"}
-					)
-				);
-			}
-						
-			pswdPromise
-			.then ( m_ImportKey )
-			.then ( m_DeriveKey )
+		-----------------------------------------------------------------------------------------------------------
+		*/
+
+		function returnValue ( cipherText ) {
+			onOk (
+				new Blob (
+					[ ivBytes, new Uint8Array ( cipherText ) ],
+					{ type : 'application/octet-stream' }
+				)
+			);
+		}
+
+		pswdPromise
+			.then ( myImportKey )
+			.then ( myDeriveKey )
 			.then ( encrypt )
 			.then ( returnValue )
 			.catch ( onError );
-		}
-		
-		/*
-		--- dataEncryptor object --------------------------------------------------------------------------------------
-		
-		---------------------------------------------------------------------------------------------------------------
-		*/
-
-		return Object.seal ( 
-			{
-				encryptData : function ( data, onOk, onError, pswdPromise ) { m_EncryptData ( data, onOk, onError, pswdPromise ); },
-				decryptData : function ( data, onOk, onError, pswdPromise ) { m_DecryptData ( data, onOk, onError, pswdPromise ); }
-			}
-		);
 	}
-	
+
 	/*
-	--- Exports -------------------------------------------------------------------------------------------------------
+	--- dataEncryptor object --------------------------------------------------------------------------------------
+
+	---------------------------------------------------------------------------------------------------------------
 	*/
 
-	if ( typeof module !== 'undefined' && module.exports ) {
-		module.exports = dataEncryptor;
-	}
+	return Object.seal (
+		{
+			encryptData : function ( data, onOk, onError, pswdPromise ) { myEncryptData ( data, onOk, onError, pswdPromise ); },
+			decryptData : function ( data, onOk, onError, pswdPromise ) { myDecryptData ( data, onOk, onError, pswdPromise ); }
+		}
+	);
+}
 
-} ) ();
+/*
+--- Exports -------------------------------------------------------------------------------------------------------
+*/
+
+export { dataEncryptor };
 
 /*
 --- End of DataEncryptor.js file --------------------------------------------------------------------------------------
