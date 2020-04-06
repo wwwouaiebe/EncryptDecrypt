@@ -1,6 +1,6 @@
 {
   "name": "encryptdecript",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "File encryptor",
   "main": "src/main.js",
   "dependencies": {},
