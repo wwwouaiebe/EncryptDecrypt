@@ -1,6 +1,6 @@
 {
   "name": "encryptdecript",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "File encryptor",
   "main": "src/main.js",
   "dependencies": {},
@@ -23,5 +23,6 @@
   "bugs": {
     "url": "https://github.com/wwwouaiebe/EncryptDecrypt/issues"
   },
+  "sources": "https://github.com/wwwouaiebe/EncryptDecrypt",
   "homepage": "https://github.com/wwwouaiebe/EncryptDecrypt#readme"
 }
