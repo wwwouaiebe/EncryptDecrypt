@@ -5,29 +5,22 @@
 		<style>
 			h3 { padding-left:1em; } 
 			h3+div { border:solid 0.1em; margin:1em; padding:1em; } 
-			#pswdMainDiv { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background-color: white; z-index: 1200; visibility:hidden; text-align: center; } 
-			#pswdDiv{ border:solid 0.1em; background-color:white; width: 20em; position:absolute; left: calc(50% - 10em); top: 10em; text-align:center; padding: 2em; } 
-			#buttonDiv{ padding-top: 1em; }
+			#pswMainDiv { border:solid 0.1em; text-align: center; margin:10em; padding:5em; } 
+			#pswDiv{ text-align:center; padding: 2em; } 
+			#buttonsDiv{ padding-top: 1em; }
 			.red{ color: red; }
 			#copyright{position: absolute; bottom: 1em;left: 1em;}
+			#waitAnimation { margin: 1em; height: 1em; width: calc(100% - 2em); overflow: hidden;}
+			#waitAnimationBullet { background-color: red; height: 100%; width: 1em; animation: 2s linear 0s infinite alternate WaitAnimationBullet;}
+			@keyframes WaitAnimationBullet { from { margin-left: 0%; } to { margin-left: calc(100% - 1em); } }
 		</style>
 	</head>
 	<body id="body">
-		<div id="EncryptDecrypt" >
-			<h3>Encrypt</h3>
-			<div>
-				<input type="file" id="encryptButton"/>
-			</div>
-			<h3>Decrypt</h3>
-			<div>
-				<input type="file" id="decryptButton"/><input placeholder='https://' type="url" id="urlDecrypt" size="128" /><input type="button" value="Go" id="goButton" />
-			</div>
-			<div id="pswdMainDiv">
-			</div>
+		<div id="encryptDecrypt" >
 		</div>
 		<div id="errorDiv" class="red">
 		</div>
-		<div id="copyright"> EncryptDecrypt v1.2.0 <a target="_blank" href="https://github.com/wwwouaiebe/EncryptDecrypt/tree/gh-pages">© wwwouaiebe 2019 2020</a></div>
+		<div id="copyright"> EncryptDecrypt v1.3.0 <a target="_blank" href="https://github.com/wwwouaiebe/EncryptDecrypt/tree/gh-pages">© wwwouaiebe 2019 2020</a></div>
 		<script>
 			include "../tmp/main.min.js"
 		</script>
