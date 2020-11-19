@@ -5,6 +5,7 @@ Simple HTML page for encrypting and decrypting a file with a password.
 ## Warning
 
 - For security reasons, this page works only with the HTTPS protocol. 
+- This page works with recent versions of Firefox and others recent browsers based on Chromium (Brave, Vivaldi...).
 - This page don't work with the old versions of MS Edge because crypto functions are not correct in the old MS Edge.
 The page works with the new MS Edge based on Chromium.
 
