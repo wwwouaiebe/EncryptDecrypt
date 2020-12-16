@@ -22,7 +22,7 @@ The page works with the new MS Edge based on Chromium.
 - Gives the password used for encryption.
 - Save the decrypted file. JPEG, PNG, PDF and HTML files are directly opened in the browser.
 
-## lauch EncryptDecrypt and directly start decrypting a file
+## Lauch EncryptDecrypt and directly start decrypting a file
 
 add "?fil=" followed by the file url base 64 encoded to the EncryptDecrypt url. The url must uses the https protocol.
 
@@ -40,5 +40,20 @@ Go to the [demo - en ](https://wwwouaiebe.github.io/EncryptDecrypt/)
 
 ## How to install
 
-Simply download the project and copy the dist/index.html file to your computer or server.
-No others files needed. CSS and Javascript are included in the index.html file.
+Simply download the project and copy the dist/index.html, dist/EncryptDecrypt.css and dist/EncryptDecrypt.min.js file to your computer or server.
+
+### Perhaps some changes to do in the index.html file
+
+Content Security policy is enabled with a meta tag in the index.html file:
+
+```
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'">
+```
+
+It is better to enable Content Security Policy on your server than through a meta tag.
+
+Because of the "connect-src 'self'" statement, it is not possible to decrypt a file that is on another server
+than the one where EncryptDecrypt is installed. You must modify this instruction, according to the rules of Content Security Policy.
+
+It may be useful to add 'integrity' and 'crossorigin' attributes to the link and script tags, as was done in the demo (see source of the index.html in the gh-pages branch).
+
