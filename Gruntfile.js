@@ -14,7 +14,7 @@ module.exports = function(grunt) {
 					format : 'iife'
 				},
 				files: {
-				  'tmp/main.js': ['src/main.js']
+				  'tmp/EncryptDecrypt.js': ['src/EncryptDecrypt.js']
 				}
 			}
 		},
@@ -50,14 +50,7 @@ module.exports = function(grunt) {
 					}
 				},
 				files: {
-					'tmp/main.min.js': ['tmp/main.js']
-				}
-			}
-		},
-		includes: {
-			Default: {
-				files: {
-					'tmp/index.html' : ['src/index.html']
+					'dist/EncryptDecrypt.min.js': ['tmp/EncryptDecrypt.js']
 				}
 			}
 		},
@@ -66,8 +59,8 @@ module.exports = function(grunt) {
 				files: [
 					{
 						expand: true,
-						cwd: 'tmp/',
-						src: ['index.html'],
+						cwd: 'src/',
+						src: ['index.html', 'EncryptDecrypt.css'],
 						dest: 'dist/'
 					}
 				]
@@ -80,12 +73,10 @@ module.exports = function(grunt) {
 	grunt.file.write ( 'buildNumber.json', '{ "buildNumber" : "' + grunt.config.data.pkg.buildNumber + '"}'  );
 	grunt.loadNpmTasks('grunt-eslint');
 	grunt.loadNpmTasks('grunt-rollup');
-	grunt.loadNpmTasks('grunt-includes');
 	grunt.loadNpmTasks('grunt-terser');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.registerTask('default', ['eslint', 'rollup', 'terser', 'includes', 'copy', 'clean']);
-	grunt.registerTask('release', ['eslint', 'rollup', 'terser', 'includes', 'copy', 'clean']);
+	grunt.registerTask('default', ['eslint', 'rollup', 'terser', 'copy', 'clean']);
 	console.log ( '---------------------------------------------------------------------------------------------------------------------------------------------');
 	console.log ( '\n                                     ' + grunt.config.data.pkg.name + ' - ' + grunt.config.data.pkg.version +' - build: '+ grunt.config.data.pkg.buildNumber + ' - ' + grunt.template.today("isoDateTime") +'\n' );
 	console.log ( '---------------------------------------------------------------------------------------------------------------------------------------------');
