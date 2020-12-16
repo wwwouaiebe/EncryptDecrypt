@@ -363,7 +363,7 @@ function setInterface ( ) {
 function decryptUrl ( url ) {
 
 	if ( 'https' !== url.substr ( ZERO, FIVE ).toLowerCase ( ) ) {
-		onError ( new Error ( 'the given url don\'t use the https protocol: ' + url ) );
+		onError ( new Error ( 'the given url don\x27t use the https protocol: ' + url ) );
 		return;
 	}
 
@@ -473,7 +473,7 @@ testCryptoPromise ( ) .then (
 			if ( 'fil=' === searchString.substr ( ZERO, FOUR ).toLowerCase ( ) ) {
 				action = 'Decrypt';
 				showProcessing ( );
-				decryptUrl ( decodeURIComponent ( escape ( atob ( searchString.substr ( FOUR ) ) ) ) );
+				decryptUrl ( decodeURIComponent ( atob ( searchString.substr ( FOUR ) ) ) );
 			}
 			else {
 				setInterface ( );
@@ -483,7 +483,7 @@ testCryptoPromise ( ) .then (
 			document.getElementById ( 'errorDiv' ).appendChild (
 				document.createTextNode (
 					'Not possible to use encryptDecrypt. The page have unsecure context or\
-					your browser don\'t support cryptography functions'
+					your browser don\x27t support cryptography functions'
 				)
 			);
 			document.getElementById ( 'body' ).removeChild (
@@ -496,8 +496,8 @@ testCryptoPromise ( ) .then (
 			console.log ( err );
 			document.getElementById ( 'errorDiv' ).appendChild (
 				document.createTextNode (
-					'Not possible to use encryptDecrypt. The page have unsecure context o\
-					r your browser don\'t support cryptography functions'
+					'Not possible to use encryptDecrypt. The page have unsecure context or\
+					your browser don\x27t support cryptography functions'
 				)
 			);
 			document.getElementById ( 'body' ).removeChild (
