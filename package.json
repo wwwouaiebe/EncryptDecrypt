@@ -5,17 +5,21 @@
   "main": "src/EncryptDecrypt.js",
   "dependencies": {},
   "devDependencies": {
-    "grunt": "^1.4.0",
-    "grunt-contrib-clean": "^2.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-eslint": "^22.0.0",
-    "grunt-rollup": "^10.0.0",
-    "grunt-terser": "^1.0.0"
+    "grunt": "latest",
+    "grunt-contrib-clean": "latest",
+    "grunt-contrib-copy": "latest",
+    "grunt-eslint": "latest",
+    "grunt-rollup": "latest",
+    "grunt-terser": "latest"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wwwouaiebe/EncryptDecrypt.git"
   },
+  "scripts": {
+    "debug" : "node node_modules/grunt/bin/grunt",
+    "release" : "node node_modules/grunt/bin/grunt"
+  },  
   "keywords": [],
   "author": "wwwouaiebe",
   "license": "GPL-3.0",

@@ -1,36 +1,35 @@
-module.exports = function(grunt) {
-	grunt.initConfig({
-		pkg: grunt.file.readJSON('package.json'),
-		eslint: {
-			options: {
-				fix: true,
-				configFile: '.eslintrc.json'
-			},				
-			target: ['src/**/*.js']
-		},	
+module.exports = function ( grunt ) {
+	grunt.initConfig ( {
+		pkg : grunt.file.readJSON ( 'package.json' ),
+		eslint : {
+			options : {
+				fix : true
+			},
+			target : [ 'src/**/*.js' ]
+		},
 		rollup : {
 			Default : {
 				options : {
 					format : 'iife'
 				},
-				files: {
-				  'tmp/EncryptDecrypt.js': ['src/EncryptDecrypt.js']
+				files : {
+					'tmp/EncryptDecrypt.js' : [ 'src/EncryptDecrypt.js' ]
 				}
 			}
 		},
-		terser: {
-			EncryptDecrypt: {
-				options: {
-					mangle: true,
-					output: {
-						preamble: 
+		terser : {
+			EncryptDecrypt : {
+				options : {
+					mangle : true,
+					output : {
+						preamble :
 							'/**\n * ' +
-							'\n * @source: <%= pkg.sources %>\n * ' + 
+							'\n * @source: <%= pkg.sources %>\n * ' +
 							'\n * @licstart  The following is the entire license notice for the' +
-							'\n * JavaScript code in this page.\n * \n * <%= pkg.name %> - version <%= pkg.version %>' + 
-							'\n * Build <%= pkg.buildNumber %> - <%= grunt.template.today("isoDateTime") %> ' + 
-							'\n * Copyright 2019 <%= grunt.template.today("yyyy") %> wwwouaiebe ' + 
-							'\n * Contact: https://www.ouaie.be/' + 
+							'\n * JavaScript code in this page.\n * \n * <%= pkg.name %> - version <%= pkg.version %>' +
+							'\n * Build <%= pkg.buildNumber %> - <%= grunt.template.today("isoDateTime") %> ' +
+							'\n * Copyright 2019 <%= grunt.template.today("yyyy") %> wwwouaiebe ' +
+							'\n * Contact: https://www.ouaie.be/' +
 							'\n * License: <%= pkg.license %>' +
 							'\n * \n * The JavaScript code in this page is free software: you can' +
 							'\n * redistribute it and/or modify it under the terms of the GNU' +
@@ -49,35 +48,36 @@ module.exports = function(grunt) {
 							'\n * \n */\n\n'
 					}
 				},
-				files: {
-					'dist/EncryptDecrypt.min.js': ['tmp/EncryptDecrypt.js']
+				files : {
+					'dist/EncryptDecrypt.min.js' : [ 'tmp/EncryptDecrypt.js' ]
 				}
 			}
 		},
-		copy: {
-			main: {
-				files: [
+		copy : {
+			main : {
+				files : [
 					{
-						expand: true,
-						cwd: 'src/',
-						src: ['index.html', 'EncryptDecrypt.css'],
-						dest: 'dist/'
+						expand : true,
+						cwd : 'src/',
+						src : [ 'index.html', 'EncryptDecrypt.css' ],
+						dest : 'dist/'
 					}
 				]
 			}
 		},
-		clean : ['tmp']
-	});
-	grunt.config.data.pkg.buildNumber = grunt.file.readJSON('buildNumber.json').buildNumber;
-	grunt.config.data.pkg.buildNumber = ("00000" + ( Number.parseInt ( grunt.config.data.pkg.buildNumber ) + 1 )).substr ( -5, 5 ) ;
-	grunt.file.write ( 'buildNumber.json', '{ "buildNumber" : "' + grunt.config.data.pkg.buildNumber + '"}'  );
-	grunt.loadNpmTasks('grunt-eslint');
-	grunt.loadNpmTasks('grunt-rollup');
-	grunt.loadNpmTasks('grunt-terser');
-	grunt.loadNpmTasks('grunt-contrib-copy');
-	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.registerTask('default', ['eslint', 'rollup', 'terser', 'copy', 'clean']);
-	console.log ( '---------------------------------------------------------------------------------------------------------------------------------------------');
-	console.log ( '\n                                     ' + grunt.config.data.pkg.name + ' - ' + grunt.config.data.pkg.version +' - build: '+ grunt.config.data.pkg.buildNumber + ' - ' + grunt.template.today("isoDateTime") +'\n' );
-	console.log ( '---------------------------------------------------------------------------------------------------------------------------------------------');
+		clean : [ 'tmp' ]
+	} );
+	grunt.config.data.pkg.buildNumber = grunt.file.readJSON ( 'buildNumber.json' ).buildNumber;
+	grunt.config.data.pkg.buildNumber =
+		( '00000' + ( Number.parseInt ( grunt.config.data.pkg.buildNumber ) + 1 ) ).substr ( -5, 5 );
+	grunt.file.write ( 'buildNumber.json', '{ "buildNumber" : "' + grunt.config.data.pkg.buildNumber + '"}' );
+	grunt.loadNpmTasks ( 'grunt-eslint' );
+	grunt.loadNpmTasks ( 'grunt-rollup' );
+	grunt.loadNpmTasks ( 'grunt-terser' );
+	grunt.loadNpmTasks ( 'grunt-contrib-copy' );
+	grunt.loadNpmTasks ( 'grunt-contrib-clean' );
+	grunt.registerTask ( 'default', [ 'eslint', 'rollup', 'terser', 'copy', 'clean' ] );
+	console.log ( '---------------------------------------------------------------------------------------------------------------------------------------------' );
+	console.log ( '\n                                     ' + grunt.config.data.pkg.name + ' - ' + grunt.config.data.pkg.version + ' - build: ' + grunt.config.data.pkg.buildNumber + ' - ' + grunt.template.today ( 'isoDateTime' ) + '\n' );
+	console.log ( '---------------------------------------------------------------------------------------------------------------------------------------------' );
 };
