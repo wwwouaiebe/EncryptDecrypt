@@ -6,14 +6,11 @@ Simple HTML page for encrypting and decrypting a file with a password.
 
 - For security reasons, this page works only with the HTTPS protocol. 
 - This page works with recent versions of Firefox and others recent browsers based on Chromium (Brave, Vivaldi...).
-- This page don't work with the old versions of MS Edge because crypto functions are not correct in the old MS Edge.
-The page works with the new MS Edge based on Chromium.
-
 
 ## Encrypting a file
 
 - Select a file with the encrypt button.
-- Gives a password.
+- Gives a password. The password must be at least 12 characters long and contain at least one capital, one lowercase, one number, and one other character (all unicode characters are valid).
 - Save the encrypted file.
 
 ## Decrypting a file
@@ -52,8 +49,7 @@ Content Security policy is enabled with a meta tag in the index.html file:
 
 It is better to enable Content Security Policy on your server than through a meta tag.
 
-Because of the "connect-src 'self'" statement, it is not possible to decrypt a file that is on another server
-than the one where EncryptDecrypt is installed. You must modify this instruction, according to the rules of Content Security Policy.
+Because of the "connect-src 'self'" statement, it is not possible to decrypt a file that is on another server than the one where EncryptDecrypt is installed. You must modify this instruction, according to the rules of Content Security Policy.
 
-It may be useful to add 'integrity' and 'crossorigin' attributes to the link and script tags, as was done in the demo (see source of the index.html in the gh-pages branch).
+It may be useful to add 'integrity' and 'crossorigin' attributes to the link and script tags.
 
