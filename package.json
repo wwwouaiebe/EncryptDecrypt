@@ -1,6 +1,6 @@
 {
   "name": "encryptdecript",
-  "version": "1.4.1",
+  "version": "2.0.0-dev",
   "description": "File encryptor",
   "main": "src/EncryptDecrypt.js",
   "dependencies": {},
@@ -17,7 +17,6 @@
     "url": "git+https://github.com/wwwouaiebe/EncryptDecrypt.git"
   },
   "scripts": {
-    "debug" : "node node_modules/grunt/bin/grunt",
     "release" : "node node_modules/grunt/bin/grunt"
   },  
   "keywords": [],

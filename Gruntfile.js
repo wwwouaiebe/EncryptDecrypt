@@ -13,7 +13,7 @@ module.exports = function ( grunt ) {
 					format : 'iife'
 				},
 				files : {
-					'tmp/EncryptDecrypt.js' : [ 'src/EncryptDecrypt.js' ]
+					'tmp/EncryptDecrypt.js' : [ 'src/main.js' ]
 				}
 			}
 		},
