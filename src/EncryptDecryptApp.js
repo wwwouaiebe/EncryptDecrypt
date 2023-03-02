@@ -22,7 +22,6 @@ Doc reviewed 20230302
  */
 
 import theUserInterface from './UserInterface.js';
-import theEncryptDecryptEngine from './EncryptDecryptEngine.js';
 import theErrorInterface from './ErrorInterface.js';
 
 /**
@@ -84,7 +83,7 @@ class EncryptDecryptApp {
 
 			// Decoding the 'fil' search param
 			try {
-				strFileUrl = atob ( strFileUrl );
+				strFileUrl = encodeURI ( atob ( strFileUrl ) );
 			}
 			catch ( err ) {
 
@@ -104,7 +103,7 @@ class EncryptDecryptApp {
 				&&
 				appURL.hostname && fileURL.hostname && appURL.hostname === fileURL.hostname
 			) {
-				return Promise.resolve ( encodeURI ( fileURL.href ) );
+				return Promise.resolve ( fileURL.href );
 			}
 			return Promise.reject (
 				new Error ( 'The distant file is not on the same site than the app or use another protocol (http: <-> https:)' )
@@ -133,7 +132,7 @@ class EncryptDecryptApp {
 					if ( strFileURL ) {
 
 						// decrypting the given url
-						theEncryptDecryptEngine.decryptURL ( strFileURL );
+						theUserInterface.decryptURL ( strFileURL );
 					}
 					else {
 

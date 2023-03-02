@@ -191,6 +191,15 @@ class UserInterface {
 		}
 	}
 
+	/**
+	Decrypt an url
+	@param {String} strFileURL The URL of the file to decrypt
+	*/
+
+	decryptURL ( strFileURL ) {
+		this.#encryptDecryptEngine.decryptURL ( strFileURL );
+	}
+
 }
 
 /**
