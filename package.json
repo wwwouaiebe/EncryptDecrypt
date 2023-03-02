@@ -11,8 +11,9 @@
     "grunt-eslint": "latest",
     "grunt-essimpledoc": "latest",
     "grunt-rollup": "latest",
-    "grunt-terser": "latest"
-  },
+    "grunt-terser": "latest",
+    "grunt-wwwouaiebe-buildnumber": "latest"
+ },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wwwouaiebe/EncryptDecrypt.git"

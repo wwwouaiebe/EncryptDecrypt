@@ -1,3 +1,5 @@
+/* eslint-disable no-magic-numbers */
+// eslint-disable-next-line no-undef
 module.exports = function ( grunt ) {
 	grunt.initConfig ( {
 		pkg : grunt.file.readJSON ( 'package.json' ),
@@ -74,20 +76,83 @@ module.exports = function ( grunt ) {
 				]
 			}
 		},
-		clean : [ 'tmp' ]
+		clean : [ 'tmp' ],
+		buildnumber : {
+			options : {
+				file : 'buildNumber.json'
+			},
+			start : {
+				action : 'read',
+				values : [
+					{
+						name : 'build',
+						initialValue : 0,
+						transform : value => String ( value ).padStart ( 5, '0' )
+					}
+				]
+			},
+			end : {
+				action : 'write',
+				values : [
+					{
+						name : 'build',
+						initialValue : 0,
+						transform : value => value + 1
+					}
+				]
+			}
+		}
 	} );
-	grunt.config.data.pkg.buildNumber = grunt.file.readJSON ( 'buildNumber.json' ).buildNumber;
-	grunt.config.data.pkg.buildNumber =
-		( '00000' + ( Number.parseInt ( grunt.config.data.pkg.buildNumber ) + 1 ) ).substr ( -5, 5 );
-	grunt.file.write ( 'buildNumber.json', '{ "buildNumber" : "' + grunt.config.data.pkg.buildNumber + '"}' );
+
+	grunt.registerTask (
+		'hello',
+		'hello',
+		function () {
+			console.error (
+				'\x1b[30;101m Start build of ' +
+				grunt.config.data.pkg.name + ' - ' +
+				grunt.config.data.pkg.version + ' - ' +
+				grunt.template.today ( 'isoDateTime' )
+				+ ' \x1b[0m'
+			);
+		}
+	);
+
+	grunt.registerTask (
+		'bye',
+		'bye',
+		function () {
+			console.error (
+				'\x1b[30;42m ' +
+				grunt.config.data.pkg.name + ' - ' +
+				grunt.config.data.pkg.version + ' - build: ' +
+				grunt.config.data.build + ' - ' +
+				grunt.template.today ( 'isoDateTime' ) +
+				' done \x1b[0m'
+			);
+		}
+	);
+
 	grunt.loadNpmTasks ( 'grunt-eslint' );
 	grunt.loadNpmTasks ( 'grunt-rollup' );
 	grunt.loadNpmTasks ( 'grunt-terser' );
 	grunt.loadNpmTasks ( 'grunt-contrib-copy' );
 	grunt.loadNpmTasks ( 'grunt-contrib-clean' );
 	grunt.loadNpmTasks ( 'grunt-essimpledoc' );
-	grunt.registerTask ( 'default', [ 'eslint', 'rollup', 'terser', 'copy', 'clean', 'essimpledoc' ] );
-	console.log ( '---------------------------------------------------------------------------------------------------------------------------------------------' );
-	console.log ( '\n                                     ' + grunt.config.data.pkg.name + ' - ' + grunt.config.data.pkg.version + ' - build: ' + grunt.config.data.pkg.buildNumber + ' - ' + grunt.template.today ( 'isoDateTime' ) + '\n' );
-	console.log ( '---------------------------------------------------------------------------------------------------------------------------------------------' );
+	grunt.loadNpmTasks ( 'grunt-wwwouaiebe-buildnumber' );
+	grunt.registerTask (
+		'default',
+		[
+			'hello',
+			'buildnumber:start',
+			'eslint',
+			'rollup',
+			'terser',
+			'copy',
+			'clean',
+			'essimpledoc',
+			'buildnumber:end',
+			'bye'
+		]
+	);
 };
