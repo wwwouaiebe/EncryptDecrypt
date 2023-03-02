@@ -58,6 +58,7 @@ class EncryptDecryptEngine {
 	#onDecryptOk ( decryptedData ) {
 
 		theWaitInterface.hide ( );
+		this.#userInterface.show ( );
 
 		// Creating an object from the data this object have name, type and data properties. See encryptFile method
 		let dataObject = null;

@@ -139,7 +139,8 @@ class UserInterface {
 		this.#urlDecryptInputHTMLElement = document.createElement ( 'input' );
 		this.#urlDecryptInputHTMLElement.type = 'url';
 		this.#urlDecryptInputHTMLElement.id = 'urlDecrypt';
-		this.#urlDecryptInputHTMLElement.size = '128';
+
+		this.#urlDecryptInputHTMLElement.size = '40';
 		this.#urlDecryptInputHTMLElement.placeholder = 'https://';
 		decryptMainHTMLElement.appendChild ( this.#urlDecryptInputHTMLElement );
 

@@ -53,6 +53,13 @@ class PasswordDialog {
 	#pswInputHTMLElement;
 
 	/**
+	The eye HTLMElement
+	@type {HTMLElement}
+	*/
+
+	#eyeHTMLElement;
+
+	/**
 	The message HTMLElement
 	@type {HTMLElement}
 	*/
@@ -120,6 +127,7 @@ class PasswordDialog {
 				:
 				'The password must be at least 12 characters long and contain at least \
 			one capital, one lowercase, one number, and one other character.';
+		this.#msgHTMLElement.classList.remove ( 'red' );
 		document.body.appendChild ( this.#mainHTMLElement );
 		this.#pswInputHTMLElement.value = '';
 		this.#pswInputHTMLElement.focus ( );
@@ -166,6 +174,24 @@ class PasswordDialog {
 	}
 
 	/**
+	Mouse down EL for the eye
+	*/
+
+	#onMouseDownEye ( ) {
+		this.#eyeHTMLElement.innerText = '👀';
+		this.#pswInputHTMLElement.type = 'text';
+	}
+
+	/**
+	Mouse leave and mouse up EL for the eye
+	*/
+
+	#onMouseUpOrLeaveEye ( ) {
+		this.#eyeHTMLElement.innerText = '👁️';
+		this.#pswInputHTMLElement.type = 'password';
+	}
+
+	/**
 	The constructor
 	*/
 
@@ -187,6 +213,14 @@ class PasswordDialog {
 		this.#pswInputHTMLElement.type = 'password';
 		this.#pswInputHTMLElement.id = 'pswInput';
 		pswHTMLElement.appendChild ( this.#pswInputHTMLElement );
+
+		this.#eyeHTMLElement = document.createElement ( 'span' );
+		this.#eyeHTMLElement.innerText = '👁️';
+		this.#eyeHTMLElement.id = 'pswEye';
+		pswHTMLElement.appendChild ( this.#eyeHTMLElement );
+		this.#eyeHTMLElement.addEventListener ( 'mousedown', ( ) => this.#onMouseDownEye ( ) );
+		this.#eyeHTMLElement.addEventListener ( 'mouseup', ( ) => this.#onMouseUpOrLeaveEye ( ) );
+		this.#eyeHTMLElement.addEventListener ( 'mouseleave', ( ) => this.#onMouseUpOrLeaveEye ( ) );
 
 		const buttonsHTMLElement = document.createElement ( 'div' );
 		buttonsHTMLElement.id = 'buttonsDiv';
