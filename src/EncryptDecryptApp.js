@@ -14,51 +14,71 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+/*
+Changes:
+	- v2.0.0:
+		- created
+Doc reviewed 20230302
+ */
+
 import theUserInterface from './UserInterface.js';
 import theEncryptDecryptEngine from './EncryptDecryptEngine.js';
 import thePasswordDialog from './PasswordDialog.js';
+import theErrorInterface from './ErrorInterface.js';
 
 const ZERO = 0;
 
-function onKeyDown ( keyBoardEvent ) {
-	if ( 'urlDecrypt' === keyBoardEvent.target.id && 'Enter' === keyBoardEvent.key ) {
-		theEncryptDecryptEngine.decryptURL ( keyBoardEvent.target.value );
-	}
-	if ( 'pswInput' === keyBoardEvent.target.id ) {
-		if ( 'Escape' === keyBoardEvent.key || 'Esc' === keyBoardEvent.key ) {
-			thePasswordDialog.onCancelButtonClick ( );
-		}
-		else if ( 'Enter' === keyBoardEvent.key ) {
-			thePasswordDialog.onOkButtonClick ( );
-		}
-	}
-}
-
-document.addEventListener ( 'keydown', onKeyDown, true );
-
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
-
+This class load the app, adding a keyboard EL on the document, verifying the presence of the crypto functions
+and then reading the page search parameters
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
 class EncryptDecryptApp {
 
 	/**
+	Keyboard event listener
+	@param {Event} keyBoardEvent the event to manage
+	*/
 
-	@param {}
-	@return {}
+	#onKeyDown ( keyBoardEvent ) {
+
+		// return key on the url input
+		if ( 'urlDecrypt' === keyBoardEvent.target.id && 'Enter' === keyBoardEvent.key ) {
+			theUserInterface.onGoButtonClick ( );
+		}
+
+		// return and escape keys on the password dialog
+		if ( 'pswInput' === keyBoardEvent.target.id ) {
+			if ( 'Escape' === keyBoardEvent.key || 'Esc' === keyBoardEvent.key ) {
+				thePasswordDialog.onCancelButtonClick ( );
+			}
+			else if ( 'Enter' === keyBoardEvent.key ) {
+				thePasswordDialog.onOkButtonClick ( );
+			}
+		}
+	}
+
+	/**
+	Test the secure context and the presence of the crypto functions
+	@return {Promise} A promise that reject when the context is not secure or the crypto functions
+	are not installed or not working
 	*/
 
 	#testCryptoPromise ( ) {
 
+		// Secure context
 		if ( ! window.isSecureContext ) {
-			return Promise.reject ( new Error ( 'You don\'t use a secure context (https)' ) );
+			return Promise.reject ( new Error ( 'You don\'t use a secure context (https or localhost)' ) );
 		}
 
+		// Crypto functions not installed
 		if ( ! window.crypto || ! window.crypto.subtle || ! window.crypto.subtle.importKey ) {
 			return Promise.reject ( new Error ( 'Cryptographic functions are not installed' ) );
 		}
+
+		// Test crypto functions
 		return window.crypto.subtle.importKey (
 			'raw',
 			new window.TextEncoder ( ).encode ( 'hoho' ),
@@ -69,58 +89,77 @@ class EncryptDecryptApp {
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	Read the page search parameters
+	@return {Promise} A promise thet resolve with a string completed with the url found in the search param
+	or reject when an error occurs or the found url is not secure
 	*/
 
 	#readURL ( ) {
+
+		// Reading url serach param
 		const appURL = new URL ( window.location );
 		let strFileUrl = appURL.searchParams.get ( 'fil' );
 		if ( strFileUrl && ZERO !== strFileUrl.length ) {
+
+			// Decoding the 'fil' search param
 			try {
 				strFileUrl = atob ( strFileUrl );
-				if ( strFileUrl.match ( /[^\w-%:./]/ ) ) {
-					return Promise.reject ( new Error ( 'invalid char in the url encoded in the fil parameter' ) );
-				}
-				const fileURL = new URL ( strFileUrl, appURL.protocol + '//' + appURL.hostname );
-				if (
-					( 'file:' === appURL.protocol && 'file:' === fileURL.protocol )
-                    ||
-					(
-						appURL.protocol && fileURL.protocol && appURL.protocol === fileURL.protocol
-                        &&
-                        appURL.hostname && fileURL.hostname && appURL.hostname === fileURL.hostname
-					)
-				) {
-					return Promise.resolve ( encodeURI ( fileURL.href ) );
-				}
-				return Promise.reject ( new Error ( 'The distant file is not on the same site than the app' ) );
 			}
 			catch ( err ) {
-				return Promise.reject ( err );
+
+				// the param is not a valid base64 string
+				return Promise.reject ( new Error ( 'The fil parameter is not a valid base64 string' ) );
 			}
+
+			// testing invalid chars in the url
+			if ( strFileUrl.match ( /[^\w-%:./]/ ) ) {
+				return Promise.reject ( new Error ( 'invalid char in the url encoded in the fil parameter' ) );
+			}
+
+			// testing the URL protocol and hostname
+			const fileURL = new URL ( strFileUrl, appURL.protocol + '//' + appURL.hostname );
+			if (
+				appURL.protocol && fileURL.protocol && appURL.protocol === fileURL.protocol
+				&&
+				appURL.hostname && fileURL.hostname && appURL.hostname === fileURL.hostname
+			) {
+				return Promise.resolve ( encodeURI ( fileURL.href ) );
+			}
+			return Promise.reject (
+				new Error ( 'The distant file is not on the same site than the app or use another protocol (http: <-> https:)' )
+			);
 		}
+
+		// no 'fil' search param found
 		return Promise.resolve ( );
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	Start the app
 	*/
 
 	startApp ( ) {
+
+		// Adding keyboard EL
+		document.addEventListener ( 'keydown', keyBoardEvent => this.#onKeyDown ( keyBoardEvent ), true );
+
+		// Test crypto functions
 		this.#testCryptoPromise ( )
 			.then (
+
+				// reading the fil search parameter
 				( ) => this.#readURL ( )
 			)
 			.then (
 				strFileURL => {
 					if ( strFileURL ) {
+
+						// decrypting the given url
 						theEncryptDecryptEngine.decryptURL ( strFileURL );
 					}
 					else {
+
+						// or showing the user interface
 						theUserInterface.show ( );
 					}
 
@@ -128,19 +167,16 @@ class EncryptDecryptApp {
 			)
 			.catch (
 				err => {
-					console.error ( err );
-					const errorHTMLElement = document.createElement ( 'div' );
-					errorHTMLElement.id = 'errorDiv';
-					errorHTMLElement.innerText = err.message;
-					document.body.appendChild ( errorHTMLElement );
+
+					// Displaying error
+					theErrorInterface.show ( );
+					theErrorInterface.errorMsg = err.message;
 				}
 			);
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	The constructor
 	*/
 
 	constructor ( ) {

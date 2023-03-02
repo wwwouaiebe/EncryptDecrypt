@@ -20,6 +20,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
+import theWaitInterface from './WaitInterface.js';
+
 class PasswordDialog {
 
 	/**
@@ -153,6 +155,7 @@ class PasswordDialog {
 
 		this.#msgHTMLElement = document.createElement ( 'div' );
 		this.#msgHTMLElement.id = 'errorPswDiv';
+		this.#mainHTMLElement.appendChild ( this.#msgHTMLElement );
 	}
 
 	/**
@@ -191,6 +194,7 @@ class PasswordDialog {
 			return;
 		}
 		this.#hide ( );
+		theWaitInterface.show ( );
 		this.#onOkFct ( new window.TextEncoder ( ).encode ( pswd ) );
 	}
 
@@ -201,7 +205,6 @@ class PasswordDialog {
 	*/
 
 	getPromise ( action ) {
-
 		return new Promise ( ( onOkFct, onCancelFct ) => this.#show ( action, onOkFct, onCancelFct ) );
 	}
 

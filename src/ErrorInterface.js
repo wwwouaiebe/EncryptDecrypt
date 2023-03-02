@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
-class WaitInterface {
+class ErrorInterface {
 
 	#hidden;
 
@@ -40,15 +40,23 @@ class WaitInterface {
 	constructor ( ) {
 		Object.freeze ( this );
 		this.#mainHTMLElement = document.createElement ( 'div' );
-		this.#mainHTMLElement.id = 'waitAnimation';
-		const bulletHTMLElement = document.createElement ( 'div' );
-		bulletHTMLElement.id = 'waitAnimationBullet';
-		this.#mainHTMLElement.appendChild ( bulletHTMLElement );
+		this.#mainHTMLElement.id = 'errorInterface';
 		this.#hidden = true;
+	}
+
+	set errorMsg ( errorMsg ) {
+		this.#mainHTMLElement.innerText = errorMsg;
+		this.#mainHTMLElement.classList.add ( 'red' );
+	}
+
+	set infoMsg ( infoMsg ) {
+		this.#mainHTMLElement.innerText = infoMsg;
+		this.#mainHTMLElement.classList.remove ( 'red' );
 	}
 
 	show ( ) {
 		if ( this.#hidden ) {
+			this.#mainHTMLElement.innerText = '';
 			document.body.appendChild ( this.#mainHTMLElement );
 			this.#hidden = false;
 		}
@@ -62,8 +70,8 @@ class WaitInterface {
 	}
 }
 
-const theWaitInterface = new WaitInterface ( );
+const theErrorInterface = new ErrorInterface ( );
 
-export default theWaitInterface;
+export default theErrorInterface;
 
 /* --- End of file --------------------------------------------------------------------------------------------------------- */

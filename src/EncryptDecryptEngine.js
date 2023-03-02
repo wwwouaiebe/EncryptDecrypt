@@ -16,33 +16,45 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import theDataEncryptor from './DataEncryptor.js';
 import thePasswordDialog from './PasswordDialog.js';
+import theErrorInterface from './ErrorInterface.js';
+import theWaitInterface from './WaitInterface.js';
 
 const NOT_FOUND = -1;
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
-
+This class contains methods for encoding or decoding a file from an url or a js file object
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
 class EncryptDecryptEngine {
 
-	/**
+	// eslint-disable-next-line no-magic-numbers
+	static get #HTTP_STATUS_OK ( ) { return 200; }
 
-	@param {}
-	@return {}
+	/**
+	Decrypt ok handler. Display the decoded file in the browser (pdf html jpeg or png) or show a dialog for saving the file
+	on the computer
+	@param {ArrayBuffer} decryptedData An ArrayBuffer with the decrypted data
 	*/
 
 	#onDecryptOk ( decryptedData ) {
+
+		theWaitInterface.hide ( );
+
+		// Creating an object from the data this object have name, type and data properties. See encryptFile method
 		let dataObject = null;
 		try {
 			dataObject = JSON.parse ( new TextDecoder ( ).decode ( decryptedData ) );
 		}
 		catch ( err ) {
 
+			// something wrong...
 			this.#onError ( err );
 			return;
 		}
+
+		// Creating a Blob from the object data property
 		let tmpArray = [];
 		for ( let property in dataObject.data ) {
 			tmpArray.push ( dataObject.data [ property ] );
@@ -54,6 +66,7 @@ class EncryptDecryptEngine {
 		);
 		let blobUrl = URL.createObjectURL ( blob );
 
+		// Displaying or saving the blob
 		let element = document.createElement ( 'a' );
 		element.setAttribute ( 'href', blobUrl );
 		if ( NOT_FOUND === [ 'application/pdf', 'text/html', 'image/jpeg', 'image/png' ].indexOf ( dataObject.type ) ) {
@@ -64,13 +77,15 @@ class EncryptDecryptEngine {
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	Encrypt ok handler. Show a dialog box for saving the file
+	@param {ArrayBuffer} encryptedData An arrayBuffer with the encrypted data
 	*/
 
-	#onEncryptOk ( encryptedDataBlob ) {
-		let blobUrl = URL.createObjectURL ( encryptedDataBlob );
+	#onEncryptOk ( encryptedData ) {
+
+		theWaitInterface.hide ( );
+
+		let blobUrl = URL.createObjectURL ( encryptedData );
 		let element = document.createElement ( 'a' );
 		element.setAttribute ( 'href', blobUrl );
 		element.setAttribute ( 'download', 'Data' );
@@ -78,19 +93,18 @@ class EncryptDecryptEngine {
 		window.URL.revokeObjectURL ( blobUrl );
 	}
 
+	/**
+	Show an error message
+	@param {Error} err The error to show
+	*/
+
 	#onError ( err ) {
+		theErrorInterface.show ( );
+		theErrorInterface.errorMsg = err.message;
 	}
 
 	/**
-
-	@param {}
-	@return {}
-	*/
-
-	/**
-
-	@param {}
-	@return {}
+	The constructor
 	*/
 
 	constructor ( ) {
@@ -98,18 +112,18 @@ class EncryptDecryptEngine {
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	Decrypt a file from it's url
+	@param {String} strFileURL the URL of the encoded file
 	*/
 
 	decryptURL ( strFileURL ) {
 		fetch ( strFileURL, { mode : 'no-cors' } )
 			.then (
 				response => {
-					if ( response.ok ) {
+					if ( response.ok && EncryptDecryptEngine.#HTTP_STATUS_OK === response.status ) {
 						return response.arrayBuffer ( );
 					}
+					return Promise.reject ( new Error ( 'Invalid url for the encoded file' ) );
 				}
 			)
 			.then (
@@ -123,7 +137,7 @@ class EncryptDecryptEngine {
 				}
 			)
 			.catch (
-
+				err => this.#onError ( err )
 			);
 	}
 

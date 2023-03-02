@@ -26,6 +26,8 @@ const ZERO = 0;
 
 class UserInterface {
 
+	#hidden;
+
 	/**
 
 	@type {}
@@ -46,18 +48,8 @@ class UserInterface {
 	@return {}
 	*/
 
-	#hide ( ) {
-		document.body.removeChild ( this.#mainHTMLElement );
-	}
-
-	/**
-
-	@param {}
-	@return {}
-	*/
-
 	#onEncryptButtonChange ( changeEvent ) {
-		this.#hide ( );
+		this.hide ( );
 		theEncryptDecryptEngine.encryptFile ( changeEvent.target.files [ ZERO ] );
 	}
 
@@ -68,7 +60,7 @@ class UserInterface {
 	*/
 
 	#onDecryptButtonChange ( changeEvent ) {
-		this.#hide ( );
+		this.hide ( );
 		theEncryptDecryptEngine.decryptFile ( changeEvent.target.files [ ZERO ] );
 	}
 
@@ -78,8 +70,8 @@ class UserInterface {
 	@return {}
 	*/
 
-	#onGoButtonClick ( ) {
-		this.#hide ( );
+	onGoButtonClick ( ) {
+		this.hide ( );
 		theEncryptDecryptEngine.decryptURL ( this.#urlDecryptInputHTMLElement.value );
 	}
 
@@ -135,7 +127,7 @@ class UserInterface {
 		goButtonHTMLElement.type = 'button';
 		goButtonHTMLElement.value = 'Go';
 		goButtonHTMLElement.id = 'goButton';
-		goButtonHTMLElement.addEventListener ( 'click', ( ) => this.#onGoButtonClick ( ) );
+		goButtonHTMLElement.addEventListener ( 'click', ( ) => this.onGoButtonClick ( ) );
 		decryptMainHTMLElement.appendChild ( goButtonHTMLElement );
 	}
 
@@ -151,6 +143,7 @@ class UserInterface {
 		this.#mainHTMLElement.id = 'encryptDecrypt';
 		this.#buildEncryptHTMLElements ( );
 		this.#buildDecryptHTMLElements ( );
+		this.#hidden = true;
 	}
 
 	/**
@@ -160,8 +153,25 @@ class UserInterface {
 	*/
 
 	show ( ) {
-		window.document.body.appendChild ( this.#mainHTMLElement );
+		if ( this.#hidden ) {
+			window.document.body.appendChild ( this.#mainHTMLElement );
+			this.#hidden = false;
+		}
 	}
+
+	/**
+
+	@param {}
+	@return {}
+	*/
+
+	hide ( ) {
+		if ( ! this.#hidden ) {
+			document.body.removeChild ( this.#mainHTMLElement );
+			this.#hidden = true;
+		}
+	}
+
 }
 
 const theUserInterface = new UserInterface ( );
