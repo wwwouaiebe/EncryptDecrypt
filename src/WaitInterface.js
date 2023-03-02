@@ -22,19 +22,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 class WaitInterface {
 
+	/**
+	A flag indicating that the interface is hidden
+	@type {boolean}
+	*/
+
 	#hidden;
 
 	/**
-
-	@type {}
+	The main HTMLElement
+	@type {HTMLElement}
 	*/
 
 	#mainHTMLElement;
 
 	/**
-
-	@param {}
-	@return {}
+	The constructor
 	*/
 
 	constructor ( ) {
@@ -47,12 +50,20 @@ class WaitInterface {
 		this.#hidden = true;
 	}
 
+	/**
+	Show the interface
+	*/
+
 	show ( ) {
 		if ( this.#hidden ) {
 			document.body.appendChild ( this.#mainHTMLElement );
 			this.#hidden = false;
 		}
 	}
+
+	/**
+	Hide the interface
+	*/
 
 	hide ( ) {
 		if ( ! this.#hidden ) {
@@ -61,6 +72,11 @@ class WaitInterface {
 		}
 	}
 }
+
+/**
+The one and only one instance of WaitInterface
+@type {WaitInterface}
+*/
 
 const theWaitInterface = new WaitInterface ( );
 

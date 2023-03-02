@@ -14,7 +14,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import theEncryptDecryptEngine from './EncryptDecryptEngine';
+import EncryptDecryptEngine from './EncryptDecryptEngine';
+
+/**
+A simple constant for 0
+@type {Number}
+*/
 
 const ZERO = 0;
 
@@ -26,59 +31,76 @@ const ZERO = 0;
 
 class UserInterface {
 
+	/**
+	A flag indicating that the interface is hidden
+	@type {boolean}
+	*/
+
 	#hidden;
 
 	/**
+	The associated EncryptDecryptEngine
+	@type {EncryptDecryptEngine}
+	*/
 
-	@type {}
+	#encryptDecryptEngine;
+
+	/**
+	The main HTMLElement
+	@type {HTMLElement}
 	*/
 
 	#mainHTMLElement;
 
 	/**
-
-	@type {}
+	The url input HTMLElement
+	@type {HTMLElement}
 	*/
 
 	#urlDecryptInputHTMLElement;
 
 	/**
+	Keyboard event listener
+	@param {Event} keyBoardEvent the event to manage
+	*/
 
-	@param {}
-	@return {}
+	#onKeyDown ( keyBoardEvent ) {
+		if ( 'urlDecrypt' === keyBoardEvent.target.id && 'Enter' === keyBoardEvent.key ) {
+			this.#onGoButtonClick ( );
+		}
+	}
+
+	/**
+	The encrypt button change EL
+	@param {Event} changeEvent The event to handle
 	*/
 
 	#onEncryptButtonChange ( changeEvent ) {
 		this.hide ( );
-		theEncryptDecryptEngine.encryptFile ( changeEvent.target.files [ ZERO ] );
+		this.#encryptDecryptEngine.encryptFile ( changeEvent.target.files [ ZERO ] );
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	The decrypt button change EL
+	@param {Event} changeEvent The event to handle
 	*/
 
 	#onDecryptButtonChange ( changeEvent ) {
 		this.hide ( );
-		theEncryptDecryptEngine.decryptFile ( changeEvent.target.files [ ZERO ] );
+		this.#encryptDecryptEngine.decryptFile ( changeEvent.target.files [ ZERO ] );
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	The go button click event listener
 	*/
 
-	onGoButtonClick ( ) {
+	#onGoButtonClick ( ) {
 		this.hide ( );
-		theEncryptDecryptEngine.decryptURL ( this.#urlDecryptInputHTMLElement.value );
+		this.#encryptDecryptEngine.decryptURL ( this.#urlDecryptInputHTMLElement.value );
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	Encrypt HTMLElements builder
 	*/
 
 	#buildEncryptHTMLElements ( ) {
@@ -97,9 +119,7 @@ class UserInterface {
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	Decrypt HTMLElements builder
 	*/
 
 	#buildDecryptHTMLElements ( ) {
@@ -127,14 +147,12 @@ class UserInterface {
 		goButtonHTMLElement.type = 'button';
 		goButtonHTMLElement.value = 'Go';
 		goButtonHTMLElement.id = 'goButton';
-		goButtonHTMLElement.addEventListener ( 'click', ( ) => this.onGoButtonClick ( ) );
+		goButtonHTMLElement.addEventListener ( 'click', ( ) => this.#onGoButtonClick ( ) );
 		decryptMainHTMLElement.appendChild ( goButtonHTMLElement );
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	The constructor
 	*/
 
 	constructor ( ) {
@@ -144,12 +162,14 @@ class UserInterface {
 		this.#buildEncryptHTMLElements ( );
 		this.#buildDecryptHTMLElements ( );
 		this.#hidden = true;
+		this.#encryptDecryptEngine = new EncryptDecryptEngine ( this );
+
+		// Adding keyboard EL
+		document.addEventListener ( 'keydown', keyBoardEvent => this.#onKeyDown ( keyBoardEvent ), true );
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	Show the interface
 	*/
 
 	show ( ) {
@@ -160,9 +180,7 @@ class UserInterface {
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	Hide the interface
 	*/
 
 	hide ( ) {
@@ -173,6 +191,11 @@ class UserInterface {
 	}
 
 }
+
+/**
+The one and only one instance of UserInterface
+@type {UserInterface}
+*/
 
 const theUserInterface = new UserInterface ( );
 

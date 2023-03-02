@@ -176,6 +176,11 @@ class DataEncryptor {
 	/* eslint-enable no-magic-numbers */
 }
 
+/**
+The one and only one instance of DataEncryptor
+@type {DataEncryptor}
+*/
+
 const theDataEncryptor = new DataEncryptor ( );
 
 export default theDataEncryptor;

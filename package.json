@@ -9,6 +9,7 @@
     "grunt-contrib-clean": "latest",
     "grunt-contrib-copy": "latest",
     "grunt-eslint": "latest",
+    "grunt-essimpledoc": "latest",
     "grunt-rollup": "latest",
     "grunt-terser": "latest"
   },

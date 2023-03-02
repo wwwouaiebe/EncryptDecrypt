@@ -19,6 +19,11 @@ import thePasswordDialog from './PasswordDialog.js';
 import theErrorInterface from './ErrorInterface.js';
 import theWaitInterface from './WaitInterface.js';
 
+/**
+A simple constant for -1
+@type {Number}
+*/
+
 const NOT_FOUND = -1;
 
 /* ------------------------------------------------------------------------------------------------------------------------- */
@@ -28,6 +33,18 @@ This class contains methods for encoding or decoding a file from an url or a js 
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
 class EncryptDecryptEngine {
+
+	/**
+	A reference to the UserInterface object
+	@type {UserInterface}
+	*/
+
+	#userInterface;
+
+	/**
+	The http status 200
+	@type {Number}
+	*/
 
 	// eslint-disable-next-line no-magic-numbers
 	static get #HTTP_STATUS_OK ( ) { return 200; }
@@ -84,6 +101,7 @@ class EncryptDecryptEngine {
 	#onEncryptOk ( encryptedData ) {
 
 		theWaitInterface.hide ( );
+		this.#userInterface.show ( );
 
 		let blobUrl = URL.createObjectURL ( encryptedData );
 		let element = document.createElement ( 'a' );
@@ -99,16 +117,20 @@ class EncryptDecryptEngine {
 	*/
 
 	#onError ( err ) {
+		theWaitInterface.hide ( );
+		this.#userInterface.show ( );
 		theErrorInterface.show ( );
 		theErrorInterface.errorMsg = err.message;
 	}
 
 	/**
 	The constructor
+	@param {UserInterface} userInterface A reference to the UserInterface object
 	*/
 
-	constructor ( ) {
+	constructor ( userInterface ) {
 		Object.freeze ( this );
+		this.#userInterface = userInterface;
 	}
 
 	/**
@@ -117,9 +139,11 @@ class EncryptDecryptEngine {
 	*/
 
 	decryptURL ( strFileURL ) {
-		fetch ( strFileURL, { mode : 'no-cors' } )
+		fetch ( strFileURL )
 			.then (
 				response => {
+
+					// reading the file as arrayBuffer
 					if ( response.ok && EncryptDecryptEngine.#HTTP_STATUS_OK === response.status ) {
 						return response.arrayBuffer ( );
 					}
@@ -128,11 +152,14 @@ class EncryptDecryptEngine {
 			)
 			.then (
 				arrayBuffer => {
+
+					// decoding the file
+					theErrorInterface.hide ( );
 					theDataEncryptor.decryptData (
 						arrayBuffer,
 						decryptedData => this.#onDecryptOk ( decryptedData ),
 						err => this.#onError ( err ),
-						thePasswordDialog.getPromise ( 'Decrypt' )
+						thePasswordDialog.getShowPromise ( 'Decrypt' )
 					);
 				}
 			)
@@ -142,14 +169,14 @@ class EncryptDecryptEngine {
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	Encrypt a file
+	@param {File} file A js File object to encrypt
 	*/
 
 	encryptFile ( file ) {
 		let fileReader = new FileReader ( );
 		fileReader.onload = ( ) => {
+			theErrorInterface.hide ( );
 			theDataEncryptor.encryptData (
 				new window.TextEncoder ( ).encode (
 					JSON.stringify (
@@ -162,34 +189,32 @@ class EncryptDecryptEngine {
 				),
 				encryptedData => this.#onEncryptOk ( encryptedData ),
 				err => this.#onError ( err ),
-				thePasswordDialog.getPromise ( 'Encrypt' )
+				thePasswordDialog.getShowPromise ( 'Encrypt' )
 			);
 		};
 		fileReader.readAsArrayBuffer ( file );
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	Decrypt a file
+	@param {File} file A js File object to decrypt
 	*/
 
 	decryptFile ( file ) {
 		let fileReader = new FileReader ( );
 		fileReader.onload = ( ) => {
+			theErrorInterface.hide ( );
 			theDataEncryptor.decryptData (
 				fileReader.result,
 				decryptedData => this.#onDecryptOk ( decryptedData ),
 				err => this.#onError ( err ),
-				thePasswordDialog.getPromise ( 'Decrypt' )
+				thePasswordDialog.getShowPromise ( 'Decrypt' )
 			);
 		};
 		fileReader.readAsArrayBuffer ( file );
 	}
 }
 
-const theEncryptDecryptEngine = new EncryptDecryptEngine ( );
-
-export default theEncryptDecryptEngine;
+export default EncryptDecryptEngine;
 
 /* --- End of file --------------------------------------------------------------------------------------------------------- */

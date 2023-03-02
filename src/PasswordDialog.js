@@ -14,77 +14,91 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+import theWaitInterface from './WaitInterface.js';
+
 /* ------------------------------------------------------------------------------------------------------------------------- */
 /**
-
+The password dialog
 */
 /* ------------------------------------------------------------------------------------------------------------------------- */
-
-import theWaitInterface from './WaitInterface.js';
 
 class PasswordDialog {
 
 	/**
-
-	@type {}
+	The main HTMLElement
+	@type {HTMLElement}
 	*/
 
 	#mainHTMLElement;
 
 	/**
-
-	@type {}
+	The ok button
+	@type {HTMLElement}
 	*/
 
 	#okButtonHtmlElement;
 
 	/**
-
-	@type {}
+	The cancel button
+	@type {HTMLElement}
 	*/
 
 	#cancelButtonHtmlElement;
 
 	/**
-
-	@type {}
+	The password input
+	@type {HTMLElement}
 	*/
 
 	#pswInputHTMLElement;
 
 	/**
-
-	@type {}
+	The message HTMLElement
+	@type {HTMLElement}
 	*/
 
 	#msgHTMLElement;
 
 	/**
-
-	@type {}
+	The function to use when the ok button is clicked
+	@type {function}
 	*/
 
 	#onOkFct;
 
 	/**
-
-	@type {}
+	The function to use when the cancel button is clicked
+	@type {function}
 	*/
 
 	#onCancelFct;
 
 	/**
-
-	@type {}
+	The minimal length for the password
+	@type {Number}
 	*/
 
 	// eslint-disable-next-line no-magic-numbers
 	static get #MIN_PSW_LENGTH ( ) { return 12; }
 
 	/**
+	Keyboard event listener
+	@param {Event} keyBoardEvent the event to manage
+	*/
 
-	@param {}
-	@return {}
+	#onKeyDown ( keyBoardEvent ) {
+		if ( 'pswInput' === keyBoardEvent.target.id ) {
+			if ( 'Escape' === keyBoardEvent.key || 'Esc' === keyBoardEvent.key ) {
+				this.#onCancelButtonClick ( );
+			}
+			else if ( 'Enter' === keyBoardEvent.key ) {
+				this.#onOkButtonClick ( );
+			}
+		}
+	}
+
+	/**
+	Hide the dialog box
 	*/
 
 	#hide ( ) {
@@ -92,9 +106,10 @@ class PasswordDialog {
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	Show the dialog box
+	@param {String} action The action associated with the dialog. Must be 'Encrypt' or 'Decrypt'
+	@param {function} onOkFct The function to call when the ok button is used
+	@param {function} onCancelFct The function to call when the cancel button is used
 	*/
 
 	#show ( action, onOkFct, onCancelFct ) {
@@ -111,9 +126,47 @@ class PasswordDialog {
 	}
 
 	/**
+	Cancel button click EL
+	*/
 
-	@param {}
-	@return {}
+	#onCancelButtonClick ( ) {
+		this.#hide ( );
+		this.#onCancelFct ( new Error ( 'Canceled by user' ) );
+		this.#pswInputHTMLElement.value = '';
+	}
+
+	/**
+	Ok button click EL
+	*/
+
+	#onOkButtonClick ( ) {
+		let pswd = this.#pswInputHTMLElement.value;
+
+		if (
+			( PasswordDialog.#MIN_PSW_LENGTH > pswd.length )
+			||
+			! pswd.match ( RegExp ( '[0-9]+' ) )
+			||
+			! pswd.match ( RegExp ( '[a-z]+' ) )
+			||
+			! pswd.match ( RegExp ( '[A-Z]+' ) )
+			||
+			! pswd.match ( RegExp ( '[^0-9a-zA-Z]' ) )
+		) {
+			this.#pswInputHTMLElement.focus ( );
+			this.#msgHTMLElement.innerText = 'The password must be at least 12 characters long and contain at least \
+				one capital, one lowercase, one number, and one other character.';
+			this.#msgHTMLElement.classList.add ( 'red' );
+			return;
+		}
+		this.#hide ( );
+		theWaitInterface.show ( );
+		this.#onOkFct ( new window.TextEncoder ( ).encode ( pswd ) );
+		this.#pswInputHTMLElement.value = '';
+	}
+
+	/**
+	The constructor
 	*/
 
 	constructor ( ) {
@@ -143,72 +196,40 @@ class PasswordDialog {
 		this.#okButtonHtmlElement.type = 'button';
 		this.#okButtonHtmlElement.value = 'Ok';
 		this.#okButtonHtmlElement.id = 'okButton';
-		this.#okButtonHtmlElement.addEventListener ( 'click', ( ) => this.onOkButtonClick ( ) );
+		this.#okButtonHtmlElement.addEventListener ( 'click', ( ) => this.#onOkButtonClick ( ) );
 		buttonsHTMLElement.appendChild ( this.#okButtonHtmlElement );
 
 		this.#cancelButtonHtmlElement = document.createElement ( 'input' );
 		this.#cancelButtonHtmlElement.type = 'button';
 		this.#cancelButtonHtmlElement.value = 'Cancel';
 		this.#cancelButtonHtmlElement.id = 'cancelButton';
-		this.#cancelButtonHtmlElement.addEventListener ( 'click', ( ) => this.onCancelButtonClick ( ) );
+		this.#cancelButtonHtmlElement.addEventListener ( 'click', ( ) => this.#onCancelButtonClick ( ) );
 		buttonsHTMLElement.appendChild ( this.#cancelButtonHtmlElement );
 
 		this.#msgHTMLElement = document.createElement ( 'div' );
 		this.#msgHTMLElement.id = 'errorPswDiv';
 		this.#mainHTMLElement.appendChild ( this.#msgHTMLElement );
+
+		// Adding keyboard EL
+		document.addEventListener ( 'keydown', keyBoardEvent => this.#onKeyDown ( keyBoardEvent ), true );
 	}
 
 	/**
-
-	@param {}
-	@return {}
+	get a promise that show the dialog
+	@param {String} action The action for witch the dialog box is called must be 'Encrypt' or 'Decrypt'
+	@return {Promise} A promise that resolve when the ok button is used or reject when the cancel button is used
 	*/
 
-	onCancelButtonClick ( ) {
-		this.#hide ( );
-		this.#onCancelFct ( new Error ( 'Canceled by user' ) );
-	}
-
-	/**
-
-	@param {}
-	@return {}
-	*/
-
-	onOkButtonClick ( ) {
-		let pswd = this.#pswInputHTMLElement.value;
-
-		if (
-			( PasswordDialog.#MIN_PSW_LENGTH > pswd.length )
-			||
-			! pswd.match ( RegExp ( '[0-9]+' ) )
-			||
-			! pswd.match ( RegExp ( '[a-z]+' ) )
-			||
-			! pswd.match ( RegExp ( '[A-Z]+' ) )
-			||
-			! pswd.match ( RegExp ( '[^0-9a-zA-Z]' ) )
-		) {
-			this.#pswInputHTMLElement.focus ( );
-			this.#msgHTMLElement.classList.add ( 'red' );
-			return;
-		}
-		this.#hide ( );
-		theWaitInterface.show ( );
-		this.#onOkFct ( new window.TextEncoder ( ).encode ( pswd ) );
-	}
-
-	/**
-
-	@param {}
-	@return {}
-	*/
-
-	getPromise ( action ) {
+	getShowPromise ( action ) {
 		return new Promise ( ( onOkFct, onCancelFct ) => this.#show ( action, onOkFct, onCancelFct ) );
 	}
 
 }
+
+/**
+The one and only one instance of PasswordDialog
+@type {PasswordDialog}
+*/
 
 const thePasswordDialog = new PasswordDialog ( );
 

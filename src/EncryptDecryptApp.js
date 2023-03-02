@@ -23,8 +23,12 @@ Doc reviewed 20230302
 
 import theUserInterface from './UserInterface.js';
 import theEncryptDecryptEngine from './EncryptDecryptEngine.js';
-import thePasswordDialog from './PasswordDialog.js';
 import theErrorInterface from './ErrorInterface.js';
+
+/**
+A simple constant for 0
+@type {Number}
+*/
 
 const ZERO = 0;
 
@@ -36,29 +40,6 @@ and then reading the page search parameters
 /* ------------------------------------------------------------------------------------------------------------------------- */
 
 class EncryptDecryptApp {
-
-	/**
-	Keyboard event listener
-	@param {Event} keyBoardEvent the event to manage
-	*/
-
-	#onKeyDown ( keyBoardEvent ) {
-
-		// return key on the url input
-		if ( 'urlDecrypt' === keyBoardEvent.target.id && 'Enter' === keyBoardEvent.key ) {
-			theUserInterface.onGoButtonClick ( );
-		}
-
-		// return and escape keys on the password dialog
-		if ( 'pswInput' === keyBoardEvent.target.id ) {
-			if ( 'Escape' === keyBoardEvent.key || 'Esc' === keyBoardEvent.key ) {
-				thePasswordDialog.onCancelButtonClick ( );
-			}
-			else if ( 'Enter' === keyBoardEvent.key ) {
-				thePasswordDialog.onOkButtonClick ( );
-			}
-		}
-	}
 
 	/**
 	Test the secure context and the presence of the crypto functions
@@ -139,9 +120,6 @@ class EncryptDecryptApp {
 	*/
 
 	startApp ( ) {
-
-		// Adding keyboard EL
-		document.addEventListener ( 'keydown', keyBoardEvent => this.#onKeyDown ( keyBoardEvent ), true );
 
 		// Test crypto functions
 		this.#testCryptoPromise ( )

@@ -53,6 +53,15 @@ module.exports = function ( grunt ) {
 				}
 			}
 		},
+		essimpledoc : {
+			release : {
+				options : {
+					src : './src',
+					dest : './docs/techDoc',
+					validate : true
+				}
+			}
+		},
 		copy : {
 			main : {
 				files : [
@@ -76,7 +85,8 @@ module.exports = function ( grunt ) {
 	grunt.loadNpmTasks ( 'grunt-terser' );
 	grunt.loadNpmTasks ( 'grunt-contrib-copy' );
 	grunt.loadNpmTasks ( 'grunt-contrib-clean' );
-	grunt.registerTask ( 'default', [ 'eslint', 'rollup', 'terser', 'copy', 'clean' ] );
+	grunt.loadNpmTasks ( 'grunt-essimpledoc' );
+	grunt.registerTask ( 'default', [ 'eslint', 'rollup', 'terser', 'copy', 'clean', 'essimpledoc' ] );
 	console.log ( '---------------------------------------------------------------------------------------------------------------------------------------------' );
 	console.log ( '\n                                     ' + grunt.config.data.pkg.name + ' - ' + grunt.config.data.pkg.version + ' - build: ' + grunt.config.data.pkg.buildNumber + ' - ' + grunt.template.today ( 'isoDateTime' ) + '\n' );
 	console.log ( '---------------------------------------------------------------------------------------------------------------------------------------------' );
