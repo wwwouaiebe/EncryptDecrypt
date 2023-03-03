@@ -192,14 +192,10 @@ class PasswordDialog {
 	}
 
 	/**
-	The constructor
+	Creation of the password div
 	*/
 
-	constructor ( ) {
-		Object.freeze ( this );
-		this.#mainHTMLElement = document.createElement ( 'div' );
-		this.#mainHTMLElement.id = 'pswMainDiv';
-
+	#createPasswordDiv ( ) {
 		const pswHTMLElement = document.createElement ( 'div' );
 		pswHTMLElement.id = 'pswDiv';
 		this.#mainHTMLElement.appendChild ( pswHTMLElement );
@@ -218,10 +214,18 @@ class PasswordDialog {
 		this.#eyeHTMLElement.innerText = '👁️';
 		this.#eyeHTMLElement.id = 'pswEye';
 		pswHTMLElement.appendChild ( this.#eyeHTMLElement );
+		this.#eyeHTMLElement.addEventListener ( 'touchstart', ( ) => this.#onMouseDownEye ( ) );
+		this.#eyeHTMLElement.addEventListener ( 'touchend', ( ) => this.#onMouseUpOrLeaveEye ( ) );
 		this.#eyeHTMLElement.addEventListener ( 'mousedown', ( ) => this.#onMouseDownEye ( ) );
 		this.#eyeHTMLElement.addEventListener ( 'mouseup', ( ) => this.#onMouseUpOrLeaveEye ( ) );
 		this.#eyeHTMLElement.addEventListener ( 'mouseleave', ( ) => this.#onMouseUpOrLeaveEye ( ) );
+	}
 
+	/**
+	Creation of the buttons div
+	*/
+
+	#createButtonsDiv ( ) {
 		const buttonsHTMLElement = document.createElement ( 'div' );
 		buttonsHTMLElement.id = 'buttonsDiv';
 		this.#mainHTMLElement.appendChild ( buttonsHTMLElement );
@@ -239,10 +243,30 @@ class PasswordDialog {
 		this.#cancelButtonHtmlElement.id = 'cancelButton';
 		this.#cancelButtonHtmlElement.addEventListener ( 'click', ( ) => this.#onCancelButtonClick ( ) );
 		buttonsHTMLElement.appendChild ( this.#cancelButtonHtmlElement );
+	}
 
+	/**
+	Creation of the message div
+	*/
+
+	#createMsgDiv ( ) {
 		this.#msgHTMLElement = document.createElement ( 'div' );
 		this.#msgHTMLElement.id = 'errorPswDiv';
 		this.#mainHTMLElement.appendChild ( this.#msgHTMLElement );
+	}
+
+	/**
+	The constructor
+	*/
+
+	constructor ( ) {
+		Object.freeze ( this );
+		this.#mainHTMLElement = document.createElement ( 'div' );
+		this.#mainHTMLElement.id = 'pswMainDiv';
+
+		this.#createPasswordDiv ( );
+		this.#createButtonsDiv ( );
+		this.#createMsgDiv ( );
 
 		// Adding keyboard EL
 		document.addEventListener ( 'keydown', keyBoardEvent => this.#onKeyDown ( keyBoardEvent ), true );
