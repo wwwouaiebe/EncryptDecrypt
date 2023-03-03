@@ -4,7 +4,7 @@ Simple HTML page for encrypting and decrypting a file with a password.
 
 ## Warning
 
-- For security reasons, this page works only with the HTTPS protocol. 
+- For security reasons, this page works only with the https:,localhost: or file: protocols. 
 - This page works with recent versions of Firefox and others recent browsers based on Chromium (Brave, Vivaldi...).
 
 ## Encrypting a file
@@ -15,14 +15,16 @@ Simple HTML page for encrypting and decrypting a file with a password.
 
 ## Decrypting a file
 
-- Select a file with the decrypt button or type the file url (the url must uses the https protocol).
+- Select a file with the decrypt button or type the file url (the url must uses the https: or localhost: protocol - This functionality is not enabled when EncryptDecrypt is launched with the file: protocol.).
 - Gives the password used for encryption.
 - Save the decrypted file. JPEG, PNG, PDF and HTML files are directly opened in the browser.
 
 ## Lauch EncryptDecrypt and directly start decrypting a file
 
-add "?fil=" followed by the file url base 64 encoded to the EncryptDecrypt url. The url must uses the https protocol.
-
+Add "?fil=" followed by the file url base 64 encoded to the EncryptDecrypt url. The url must uses the https protocol.
+This functionality is not enabled when EncryptDecrypt is launched with the file: protocol.
+When using this functionality, the encrypted file must uses the same protocol, the same host name and the same port than the app, so you can use a relative or absolute path.
+You don't know how to encode to base 64? see [this](https://wwwouaiebe.github.io/base64/). Sources are [there](https://github.com/wwwouaiebe/base64)
 Sample : [https://wwwouaiebe.github.io/EncryptDecrypt/?fil=aHR0cHM6Ly93d3dvdWFpZWJlLmdpdGh1Yi5pby9FbmNyeXB0RGVjcnlwdC9zYW1wbGUuZW5j](https://wwwouaiebe.github.io/EncryptDecrypt/?fil=aHR0cHM6Ly93d3dvdWFpZWJlLmdpdGh1Yi5pby9FbmNyeXB0RGVjcnlwdC9zYW1wbGUuZW5j)
 
 The password is (Mush1544room)

@@ -50,7 +50,7 @@ class EncryptDecryptApp {
 
 		// Secure context
 		if ( ! window.isSecureContext ) {
-			return Promise.reject ( new Error ( 'You don\'t use a secure context (https or localhost)' ) );
+			return Promise.reject ( new Error ( 'You don\'t use a secure context (https:, localhost: or file:)' ) );
 		}
 
 		// Crypto functions not installed
@@ -78,6 +78,13 @@ class EncryptDecryptApp {
 
 		// Reading url serach param
 		const appURL = new URL ( window.location );
+
+		if ( 'file:' === appURL.protocol ) {
+
+			// Never possible to open a file with fetch ( ) when the protocol is file
+			return Promise.resolve ( );
+		}
+
 		let strFileUrl = appURL.searchParams.get ( 'fil' );
 		if ( strFileUrl && ZERO !== strFileUrl.length ) {
 
@@ -97,12 +104,13 @@ class EncryptDecryptApp {
 			}
 
 			// testing the URL protocol and hostname
-			const fileURL = new URL ( strFileUrl, appURL.protocol + '//' + appURL.hostname );
+			const fileURL = new URL ( strFileUrl, appURL.protocol + '//' + appURL.host );
 			if (
 				appURL.protocol && fileURL.protocol && appURL.protocol === fileURL.protocol
 				&&
-				appURL.hostname && fileURL.hostname && appURL.hostname === fileURL.hostname
+				appURL.host && fileURL.host && appURL.host === fileURL.host
 			) {
+				console.log ( fileURL.href );
 				return Promise.resolve ( fileURL.href );
 			}
 			return Promise.reject (

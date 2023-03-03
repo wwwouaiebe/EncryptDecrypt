@@ -136,20 +136,22 @@ class UserInterface {
 		decryptInputHTMLElement.addEventListener ( 'change', changeEvent => this.#onDecryptButtonChange ( changeEvent ) );
 		decryptMainHTMLElement.appendChild ( decryptInputHTMLElement );
 
-		this.#urlDecryptInputHTMLElement = document.createElement ( 'input' );
-		this.#urlDecryptInputHTMLElement.type = 'url';
-		this.#urlDecryptInputHTMLElement.id = 'urlDecrypt';
+		if ( 'file:' !== new URL ( window.location ).protocol ) {
+			this.#urlDecryptInputHTMLElement = document.createElement ( 'input' );
+			this.#urlDecryptInputHTMLElement.type = 'url';
+			this.#urlDecryptInputHTMLElement.id = 'urlDecrypt';
 
-		this.#urlDecryptInputHTMLElement.size = '40';
-		this.#urlDecryptInputHTMLElement.placeholder = 'https://';
-		decryptMainHTMLElement.appendChild ( this.#urlDecryptInputHTMLElement );
+			this.#urlDecryptInputHTMLElement.size = '40';
+			this.#urlDecryptInputHTMLElement.placeholder = 'https://';
+			decryptMainHTMLElement.appendChild ( this.#urlDecryptInputHTMLElement );
 
-		let goButtonHTMLElement = document.createElement ( 'input' );
-		goButtonHTMLElement.type = 'button';
-		goButtonHTMLElement.value = 'Go';
-		goButtonHTMLElement.id = 'goButton';
-		goButtonHTMLElement.addEventListener ( 'click', ( ) => this.#onGoButtonClick ( ) );
-		decryptMainHTMLElement.appendChild ( goButtonHTMLElement );
+			let goButtonHTMLElement = document.createElement ( 'input' );
+			goButtonHTMLElement.type = 'button';
+			goButtonHTMLElement.value = 'Go';
+			goButtonHTMLElement.id = 'goButton';
+			goButtonHTMLElement.addEventListener ( 'click', ( ) => this.#onGoButtonClick ( ) );
+			decryptMainHTMLElement.appendChild ( goButtonHTMLElement );
+		}
 	}
 
 	/**
