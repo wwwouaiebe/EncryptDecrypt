@@ -51,7 +51,8 @@ module.exports = function ( grunt ) {
 					}
 				},
 				files : {
-					'dist/EncryptDecrypt.min.js' : [ 'tmp/EncryptDecrypt.js' ]
+					'dist/EncryptDecrypt.min.js' : [ 'tmp/EncryptDecrypt.js' ],
+					'docs/demo/EncryptDecrypt.min.js' : [ 'tmp/EncryptDecrypt.js' ]
 				}
 			}
 		},
@@ -72,6 +73,12 @@ module.exports = function ( grunt ) {
 						cwd : 'src/',
 						src : [ 'index.html', 'EncryptDecrypt.css' ],
 						dest : 'dist/'
+					},
+					{
+						expand : true,
+						cwd : 'src/',
+						src : [ 'index.html', 'EncryptDecrypt.css' ],
+						dest : 'docs/demo/'
 					}
 				]
 			}
