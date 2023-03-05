@@ -9,10 +9,12 @@
         "SharedArrayBuffer": "readonly"
     },
     "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType": "module"
-    },
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+		"requireConfigFile": false
+	},
     "rules": {
+		"no-unused-private-class-members": ["warn"],
 		"curly" : [ "warn" ],
 		"complexity" : [ "warn", 20 ],
 		"default-case" : [ "warn" ],
@@ -21,6 +23,8 @@
 		"no-case-declarations" : [ "warn" ],
 		"no-else-return" : ["warn" ],
 		"no-eval" : [ "error" ],
+		"no-empty" : [ "warn" ],
+		"no-console" : ["warn", { "allow" : ["error"] }],
 		"no-extend-native" : [ "error" ],
 		"no-extra-bind" : [ "error" ],
 		"no-implicit-coercion" : [ "error" ],
@@ -36,13 +40,14 @@
 		"no-throw-literal" : [ "warn" ],
 		"no-unmodified-loop-condition" : [ "warn" ],
 		"no-useless-return" : [ "warn" ],
+		"no-unused-vars" : [ "warn" ],
 		"prefer-promise-reject-errors" : [ "warn" ],
 		"yoda" : [ "warn" , "always" ],
 		
 		"init-declarations" : [ "warn", "always" ],
 		"no-shadow" : [ "error", { "builtinGlobals" : true, "hoist" : "all"} ],
 		"no-undef-init" : [ "warn" ],
-		"no-use-before-define": ["warn", { "functions": false, "classes": true, "variables": true }],
+		"no-use-before-define": ["warn", { "functions": true, "classes": true }],
 	
 		"array-bracket-newline" : [ "warn" , "consistent" ],
 		"array-bracket-spacing" : [ "warn" , "always" ],
@@ -65,11 +70,13 @@
 		"key-spacing" : [ "warn", { "beforeColon": true , "afterColon": true , "mode": "strict" } ],
 		"keyword-spacing" : [ "warn" ],
 		"lines-around-comment" : [ "warn", { "beforeBlockComment": true , "afterBlockComment": true , "beforeLineComment": true , "afterLineComment": false} ],
+		"max-classes-per-file": ["warn", 1],
+		"max-lines" : [ "warn", { "max": 300, "skipBlankLines": true , "skipComments": true } ],
 		"max-depth" : [ "warn" , { "max" : 4 } ],
 		"max-len" : [ "warn" , { "code" : 128 } ],
-		"max-nested-callbacks" : [ "warn" , { "max" : 2 } ],
-		"max-params" : [ "warn" , { "max" : 4 } ],
-		"max-statements" : [ "warn", 45 ],
+		"max-nested-callbacks" : [ "warn" , { "max" : 3 } ],
+		"max-params" : [ "warn" , { "max" : 3 } ],
+		"max-statements" : [ "warn", 40 ],
 		"max-statements-per-line" : [ "warn" ],
 		"newline-per-chained-call" : [ "warn" ],
 		"no-array-constructor" : [ "warn" ],

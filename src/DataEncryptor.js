@@ -1,5 +1,6 @@
 /*
-Copyright - 2019 - wwwouaiebe - Contact: http//www.ouaie.be/
+Copyright - 2017 2023 - wwwouaiebe - Contact: https://www.ouaie.be/
+
 This  program is free software;
 you can redistribute it and/or modify it under the terms of the
 GNU General Public License as published by the Free Software Foundation;
@@ -12,40 +13,37 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
 /*
---- DataEncryptor.js file ---------------------------------------------------------------------------------------------
-This file contains:
-
 Changes:
+	- v2.0.0:
+		- created from TravelNotes/core/lib/DataEncryptor.js
+Doc reviewed 202208
+ */
 
-Doc reviewed:
-
-Tests :
-
------------------------------------------------------------------------------------------------------------------------
+/* ------------------------------------------------------------------------------------------------------------------------- */
+/**
+This class is used to encrypt an decrypt data with a password
 */
+/* ------------------------------------------------------------------------------------------------------------------------- */
 
-/*
---- dataEncryptor function ----------------------------------------------------------------------------------------
+class DataEncryptor {
 
--------------------------------------------------------------------------------------------------------------------
-*/
-
-function dataEncryptor ( ) {
-
-	const ZERO = 0;
-	const SIXTEEN = 16;
-	const TWO_EXP_EIGHT = 256;
-	const TEN_EXP_SIX = 1000000;
-
-	/*
-	--- myImportKey function --------------------------------------------------------------------------------------
-
-	---------------------------------------------------------------------------------------------------------------
+	/**
+	Salt to be used for encoding and decoding operations.
+	@type {String}
 	*/
 
-	function myImportKey ( pswd ) {
+	#salt;
+
+	/* eslint-disable no-magic-numbers */
+
+	/**
+	Call the importKey() method of the SubtleCrypto interface
+	@param {Uint8Array} pswd The password to use, encode with TextEncoder.encode ( )
+	@return {Promise} a Promise that fulfills with the imported key as a CryptoKey object
+	*/
+
+	#importKey ( pswd ) {
 		return window.crypto.subtle.importKey (
 			'raw',
 			pswd,
@@ -55,134 +53,136 @@ function dataEncryptor ( ) {
 		);
 	}
 
-	/*
-	--- myDeriveKey function --------------------------------------------------------------------------------------
-
-	---------------------------------------------------------------------------------------------------------------
+	/**
+	Call the deriveKey() method of the SubtleCrypto interface
+	@param {CryptoKey} masterKey the CryptoKey returned by the onOk handler of the Promise returned by #importKey
+	@param {String} salt The salt to use
+	@return {Promise} a Promise which will be fulfilled with a CryptoKey object representing the secret key derived
+	from the master key
 	*/
 
-	function myDeriveKey ( deriveKey ) {
+	#deriveKey ( masterKey, salt ) {
 		return window.crypto.subtle.deriveKey (
 			{
 				name : 'PBKDF2',
-				salt : new window.TextEncoder ( ).encode (
-					'Tire la chevillette la bobinette cherra. Le Petit Chaperon rouge tira la chevillette.' ),
-				iterations : TEN_EXP_SIX,
+				salt : new window.TextEncoder ( ).encode ( salt ),
+				iterations : 1000000,
 				hash : 'SHA-256'
 			},
-			deriveKey,
+			masterKey,
 			{
 				name : 'AES-GCM',
-				length : TWO_EXP_EIGHT
+				length : 256
 			},
 			false,
 			[ 'encrypt', 'decrypt' ]
 		);
 	}
 
-	/*
-	--- myEncryptData object --------------------------------------------------------------------------------------
-
-	---------------------------------------------------------------------------------------------------------------
+	/**
+	Call the decrypt() method of the SubtleCrypto interface
+	@param {CryptoKey} decryptKey The key to use for decryption
+	@param {Uint8Array} data The data to decode
+	@return {Promise} a Promise which will be fulfilled with the decrypted data as a Uint8Array.
+	Use TextDecoder.decode ( ) to transform to string
 	*/
 
-	function myDecryptData ( data, onOk, onError, pswdPromise ) {
+	#decrypt ( decryptKey, data ) {
+		return window.crypto.subtle.decrypt (
+			{
+				name : 'AES-GCM',
+				iv : new Uint8Array ( data.slice ( 0, 16 ) )
+			},
+			decryptKey,
+			new Uint8Array ( data.slice ( 16 ) )
+		);
+	}
 
-		/*
-		--- decrypt function --------------------------------------------------------------------------------------
+	/**
+	Call the encrypt() method of the SubtleCrypto interface
+	@param {CryptoKey} encryptKey The key to use for encryption
+	@param {Uint8Array} ivBytes A Uint8Array with random values used for encoding
+	@param {Uint8Array} data the data to encode transformed to a Uint8Array with TextEncoder.encode ( )
+	@return {Promise} a Promise which will be fulfilled with the encrypted data as a Uint8Array
+	*/
 
-		-----------------------------------------------------------------------------------------------------------
-		*/
+	#encrypt ( encryptKey, ivBytes, data ) {
+		return window.crypto.subtle.encrypt (
+			{
+				name : 'AES-GCM',
+				iv : ivBytes
+			},
+			encryptKey,
+			data
+		);
+	}
 
-		function decrypt ( decryptKey ) {
-			return window.crypto.subtle.decrypt (
-				{
-					name : 'AES-GCM',
-					iv : new Uint8Array ( data.slice ( ZERO, SIXTEEN ) )
-				},
-				decryptKey,
-				new Uint8Array ( data.slice ( SIXTEEN ) )
-			);
-		}
+	/**
+	The constructor
+	@param {String} salt Salt to be used for encoding and decoding operations. If none, a default value is provided.
+	*/
 
+	constructor ( salt ) {
+		this.#salt = salt || 'Tire la chevillette la bobinette cherra. Le Petit Chaperon rouge tira la chevillette.';
+		Object.freeze ( this );
+	}
+
+	/* eslint-disable max-params */
+
+	/**
+	This method encrypt data with a password
+	@param {Uint8Array} data The data to encrypt. See TextEncoder ( ) to transform string to Uint8Array
+	@param {function} onOk A function to execute when the encryption succeeds
+	@param {function} onError A function to execute when the encryption fails
+	@param {Promise} pswdPromise A Promise that fullfil with a password. Typically a dialog...
+	*/
+
+	encryptData ( data, onOk, onError, pswdPromise ) {
+		let ivBytes = window.crypto.getRandomValues ( new Uint8Array ( 16 ) );
 		pswdPromise
-			.then ( myImportKey )
-			.then ( myDeriveKey )
-			.then ( decrypt )
+			.then ( pswd => this.#importKey ( pswd ) )
+			.then ( deriveKey => this.#deriveKey ( deriveKey, this.#salt ) )
+			.then ( encryptKey => this.#encrypt ( encryptKey, ivBytes, data ) )
+			.then (
+				cipherText => {
+					onOk (
+						new Blob (
+							[ ivBytes, new Uint8Array ( cipherText ) ],
+							{ type : 'application/octet-stream' }
+						)
+					);
+				}
+			)
+			.catch ( onError );
+	}
+
+	/**
+	This method decrypt data with a password
+	@param {Uint8Array} data The data to decrypt. See TextDecoder ( ) to transform Uint8Array to string
+	@param {function} onOk A function to execute when the decryption succeeds
+	@param {function} onError A function to execute when the decryption fails
+	@param {Promise} pswdPromise A Promise that fullfil with a password. Typically a dialog...
+	*/
+
+	decryptData ( data, onOk, onError, pswdPromise ) {
+		pswdPromise
+			.then ( pswd => this.#importKey ( pswd ) )
+			.then ( deriveKey => this.#deriveKey ( deriveKey, this.#salt ) )
+			.then ( decryptKey => this.#decrypt ( decryptKey, data ) )
 			.then ( onOk )
 			.catch ( onError );
 	}
-
-	/*
-	--- myEncryptData object --------------------------------------------------------------------------------------
-
-	---------------------------------------------------------------------------------------------------------------
-	*/
-
-	function myEncryptData ( data, onOk, onError, pswdPromise ) {
-
-		let ivBytes = window.crypto.getRandomValues ( new Uint8Array ( SIXTEEN ) );
-
-		/*
-		--- encrypt function --------------------------------------------------------------------------------------
-
-		-----------------------------------------------------------------------------------------------------------
-		*/
-
-		function encrypt ( encryptKey ) {
-			return window.crypto.subtle.encrypt (
-				{
-					name : 'AES-GCM',
-					iv : ivBytes
-				},
-				encryptKey,
-				data
-			);
-		}
-
-		/*
-		--- returnValue function --------------------------------------------------------------------------------------
-
-		-----------------------------------------------------------------------------------------------------------
-		*/
-
-		function returnValue ( cipherText ) {
-			onOk (
-				new Blob (
-					[ ivBytes, new Uint8Array ( cipherText ) ],
-					{ type : 'application/octet-stream' }
-				)
-			);
-		}
-
-		pswdPromise
-			.then ( myImportKey )
-			.then ( myDeriveKey )
-			.then ( encrypt )
-			.then ( returnValue )
-			.catch ( onError );
-	}
-
-	/*
-	--- dataEncryptor object --------------------------------------------------------------------------------------
-
-	---------------------------------------------------------------------------------------------------------------
-	*/
-
-	return Object.seal (
-		{
-			encryptData : function ( data, onOk, onError, pswdPromise ) { myEncryptData ( data, onOk, onError, pswdPromise ); },
-			decryptData : function ( data, onOk, onError, pswdPromise ) { myDecryptData ( data, onOk, onError, pswdPromise ); }
-		}
-	);
+	/* eslint-enable max-params */
+	/* eslint-enable no-magic-numbers */
 }
 
-/*
---- Exports -------------------------------------------------------------------------------------------------------
+/**
+The one and only one instance of DataEncryptor
+@type {DataEncryptor}
 */
 
-export { dataEncryptor };
+const theDataEncryptor = new DataEncryptor ( );
 
-/*
---- End of DataEncryptor.js file --------------------------------------------------------------------------------------
-*/
+export default theDataEncryptor;
+
+/* --- End of file --------------------------------------------------------------------------------------------------------- */
