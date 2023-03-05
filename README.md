@@ -15,7 +15,7 @@ Simple HTML page for encrypting and decrypting a file with a password.
 
 ## Decrypting a file
 
-- Select a file with the decrypt button or type the file url (the url must uses the https: or localhost: protocol - This functionality is not enabled when EncryptDecrypt is launched with the file: protocol.).
+- Select a file with the decrypt button or type the file url (the url must uses the https: or localhost: protocol - This functionality is not enabled when EncryptDecrypt is launched with the file: protocol).
 - Gives the password used for encryption.
 - Save the decrypted file. JPEG, PNG, PDF and HTML files are directly opened in the browser.
 
