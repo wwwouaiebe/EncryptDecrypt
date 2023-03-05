@@ -57,4 +57,4 @@ It is better to enable Content Security Policy on your server than through a met
 
 Because of the "connect-src 'self'" statement, it is not possible to decrypt a file that is on another server than the one where EncryptDecrypt is installed. You must modify this instruction, according to the rules of Content Security Policy.
 
-It may be useful to add 'integrity' and 'crossorigin' attributes to the link and script tags.
+It may be useful to add 'integrity' and 'crossorigin' attributes to the link and script tags (see demo).
