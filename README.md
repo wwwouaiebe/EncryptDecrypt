@@ -39,7 +39,7 @@ No solution... put the file to the bin.
 
 ## Demo
 
-Go to the [demo - en ](https://wwwouaiebe.github.io/EncryptDecrypt/)
+Go to the [demo - en ](https://wwwouaiebe.github.io/EncryptDecrypt/demo)
 
 ## How to install
 
