@@ -92,7 +92,7 @@ class EncryptDecryptApp {
 			try {
 				strFileUrl = encodeURI ( atob ( strFileUrl ) );
 			}
-			catch ( err ) {
+			catch {
 
 				// the param is not a valid base64 string
 				return Promise.reject ( new Error ( 'The fil parameter is not a valid base64 string' ) );
@@ -110,7 +110,6 @@ class EncryptDecryptApp {
 				&&
 				appURL.host && fileURL.host && appURL.host === fileURL.host
 			) {
-				console.log ( fileURL.href );
 				return Promise.resolve ( fileURL.href );
 			}
 			return Promise.reject (

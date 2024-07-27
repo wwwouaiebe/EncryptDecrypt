@@ -5,7 +5,8 @@ module.exports = function ( grunt ) {
 		pkg : grunt.file.readJSON ( 'package.json' ),
 		eslint : {
 			options : {
-				fix : true
+				fix : true,
+				overrideConfigFile : 'eslint.config.js'
 			},
 			target : [ 'src/**/*.js' ]
 		},
