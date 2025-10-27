@@ -10,17 +10,16 @@
     "grunt-contrib-clean": "latest",
     "grunt-contrib-copy": "latest",
     "grunt-eslint": "latest",
-    "grunt-essimpledoc": "latest",
     "grunt-rollup": "latest",
-    "grunt-terser": "latest",
-    "grunt-wwwouaiebe-buildnumber": "latest"
+    "grunt-terser": "latest"
  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wwwouaiebe/EncryptDecrypt.git"
   },
   "scripts": {
-    "release" : "node node_modules/grunt/bin/grunt"
+    "release" : "node node_modules/grunt/bin/grunt",
+    "doc": "node ../ESSimpleDoc/bin/index.js --src=./src --dest=./docs/techDoc --validate=true"
   },  
   "keywords": [],
   "author": "wwwouaiebe",

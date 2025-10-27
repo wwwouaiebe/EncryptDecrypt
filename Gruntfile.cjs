@@ -146,8 +146,7 @@ module.exports = function ( grunt ) {
 	grunt.loadNpmTasks ( 'grunt-terser' );
 	grunt.loadNpmTasks ( 'grunt-contrib-copy' );
 	grunt.loadNpmTasks ( 'grunt-contrib-clean' );
-	grunt.loadNpmTasks ( 'grunt-essimpledoc' );
-	grunt.loadNpmTasks ( 'grunt-wwwouaiebe-buildnumber' );
+	grunt.loadTasks ( '../Grunt-wwwouaiebe-BuildNumber/tasks/' );
 	grunt.registerTask (
 		'default',
 		[
@@ -158,7 +157,6 @@ module.exports = function ( grunt ) {
 			'terser',
 			'copy',
 			'clean',
-			'essimpledoc',
 			'buildnumber:end',
 			'bye'
 		]
