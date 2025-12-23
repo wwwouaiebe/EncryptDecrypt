@@ -17,7 +17,7 @@ Simple HTML page for encrypting and decrypting a file with a password.
 
 - Select a file with the decrypt button or type the file url (the url must uses the https: or localhost: protocol - This functionality is not enabled when EncryptDecrypt is launched with the file: protocol).
 - Gives the password used for encryption.
-- Save the decrypted file. JPEG, PNG, PDF and HTML files are directly opened in the browser.
+- Save the decrypted file. JPEG, PNG, PDF and HTML files can be directly opened in the browser, depending of the browser configuration.
 
 ## Lauch EncryptDecrypt and directly start decrypting a file
 
@@ -43,7 +43,7 @@ Go to the [demo - en ](https://wwwouaiebe.github.io/EncryptDecrypt/demo)
 
 ## How to install
 
-Simply download the project and copy the dist/index.html, dist/EncryptDecrypt.css and dist/EncryptDecrypt.min.js file to your computer or server.
+Simply download the project and copy the dist/index.html, dist/encryptdecrypt.min.css and dist/encryptdecrypt.min.js file to your computer or server.
 
 ### Perhaps some changes to do in the index.html file
 
@@ -56,5 +56,3 @@ Content Security policy is enabled with a meta tag in the index.html file:
 It is better to enable Content Security Policy on your server than through a meta tag.
 
 Because of the "connect-src 'self'" statement, it is not possible to decrypt a file that is on another server than the one where EncryptDecrypt is installed. You must modify this instruction, according to the rules of Content Security Policy.
-
-It may be useful to add 'integrity' and 'crossorigin' attributes to the link and script tags (see demo).

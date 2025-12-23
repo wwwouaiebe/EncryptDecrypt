@@ -46,12 +46,10 @@ export default [
 			"no-unused-vars" : [ "warn" ],
 			"prefer-promise-reject-errors" : [ "warn" ],
 			"yoda" : [ "warn" , "always" ],
-			
 			"init-declarations" : [ "warn", "always" ],
 			"no-shadow" : [ "error", { "builtinGlobals" : true, "hoist" : "all"} ],
 			"no-undef-init" : [ "warn" ],
 			"no-use-before-define": ["warn", { "functions": true, "classes": true }],
-		
 			"array-bracket-newline" : [ "warn" , "consistent" ],
 			"array-bracket-spacing" : [ "warn" , "always" ],
 			"array-element-newline" : [ "warn" , "consistent" ],
@@ -112,7 +110,6 @@ export default [
 			"spaced-comment" : [ "warn" , "always" ],
 			"switch-colon-spacing" : [ "warn" , {"after": true, "before": true}],
 			"wrap-regex" : [ "warn" ],
-			
 			"arrow-body-style" : [ "warn" , "as-needed" ],
 			"arrow-parens" : [ "warn" , "as-needed" ],
 			"arrow-spacing" : [ "warn", { "before": true, "after": true } ],

@@ -1,32 +1,30 @@
 {
-  "type":"module",
-  "name": "encryptdecript",
-  "version": "2.0.7",
-  "description": "File encryptor",
-  "main": "src/EncryptDecrypt.js",
-  "dependencies": {},
-  "devDependencies": {
-    "grunt": "latest",
-    "grunt-contrib-clean": "latest",
-    "grunt-contrib-copy": "latest",
-    "grunt-eslint": "latest",
-    "grunt-rollup": "latest",
-    "grunt-terser": "latest"
- },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wwwouaiebe/EncryptDecrypt.git"
-  },
-  "scripts": {
-    "release" : "node node_modules/grunt/bin/grunt",
-    "doc": "node ../ESSimpleDoc/bin/index.js --src=./src --dest=./docs/techDoc --validate=true"
-  },  
-  "keywords": [],
-  "author": "wwwouaiebe",
-  "license": "GPL-3.0",
-  "bugs": {
-    "url": "https://github.com/wwwouaiebe/EncryptDecrypt/issues"
-  },
-  "sources": "https://github.com/wwwouaiebe/EncryptDecrypt",
-  "homepage": "https://github.com/wwwouaiebe/EncryptDecrypt#readme"
+    "type": "module",
+    "name": "encryptdecript",
+    "version": "2.0.8",
+    "buildNumber": 58,
+    "description": "File encryptor",
+    "main": "src/main.js",
+    "dependencies": {},
+    "devDependencies": {
+        "eslint": "latest",
+        "rollup": "latest",
+        "terser": "latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/wwwouaiebe/EncryptDecrypt.git"
+    },
+    "scripts": {
+        "release": "node ./AppBuilder.js --src=./src --dest=./dist",
+        "doc": "node ../ESSimpleDoc/bin/index.js --src=./src --dest=./docs/techDoc --validate=true"
+    },
+    "keywords": [],
+    "author": "wwwouaiebe",
+    "license": "GPL-3.0",
+    "bugs": {
+        "url": "https://github.com/wwwouaiebe/EncryptDecrypt/issues"
+    },
+    "sources": "https://github.com/wwwouaiebe/EncryptDecrypt",
+    "homepage": "https://github.com/wwwouaiebe/EncryptDecrypt#readme"
 }
