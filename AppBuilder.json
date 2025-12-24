@@ -1,0 +1,18 @@
+{
+    "cleanDirs" : [ "./dist/", "./docs/demo/" ],
+    "ESLintFiles" : [ "./src/**/*.js" ],
+    "tasks" : [
+        {
+            "name" : "EncryptDecrypt",
+            "destDir" : "./dist/",
+            "srcDir" : "./src/",
+            "cssFiles" : [ "EncryptDecrypt.css" ],
+            "jsFile" : "main.js",
+            "htmlFile" : "index.html",
+            "copyFiles" : [
+                { "src" : "./dist/", "dest" : "./docs/demo/" },
+                { "src" : "./src/sample.enc", "dest" : "./docs/demo/sample.enc"}
+            ]
+        }
+    ]
+}

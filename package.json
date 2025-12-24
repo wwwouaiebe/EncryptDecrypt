@@ -1,22 +1,18 @@
 {
     "type": "module",
-    "name": "encryptdecript",
+    "name": "EncryptDecrypt",
     "version": "2.0.8",
-    "buildNumber": 58,
+    "buildNumber": 86,
     "description": "File encryptor",
     "main": "src/main.js",
     "dependencies": {},
-    "devDependencies": {
-        "eslint": "latest",
-        "rollup": "latest",
-        "terser": "latest"
-    },
+    "devDependencies": {},
     "repository": {
         "type": "git",
         "url": "git+https://github.com/wwwouaiebe/EncryptDecrypt.git"
     },
     "scripts": {
-        "release": "node ./AppBuilder.js --src=./src --dest=./dist",
+        "release": "node ../AppBuilder/src/AppBuilder.js",
         "doc": "node ../ESSimpleDoc/bin/index.js --src=./src --dest=./docs/techDoc --validate=true"
     },
     "keywords": [],
