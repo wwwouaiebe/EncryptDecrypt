@@ -1,17 +1,30 @@
 {
-    "cleanDirs" : [ "./dist/", "./docs/demo/" ],
     "ESLintFiles" : [ "./src/**/*.js" ],
+    "styleLintFiles" : [ "./src/**/*.css" ],
     "tasks" : [
         {
+            "type" : "release",
             "name" : "EncryptDecrypt",
-            "destDir" : "./dist/",
-            "srcDir" : "./src/",
-            "cssFiles" : [ "EncryptDecrypt.css" ],
-            "jsFile" : "main.js",
-            "htmlFile" : "index.html",
-            "copyFiles" : [
-                { "src" : "./dist/", "dest" : "./docs/demo/" },
-                { "src" : "./src/sample.enc", "dest" : "./docs/demo/sample.enc"}
+            "cleanDirs" : [ "./docs/demo/" ],
+            "destDir" : "./docs/demo/",
+            "cssFiles" : [ "./src/EncryptDecrypt.css" ],
+            "jsFile" : "./src/main.js",
+            "htmlFile" : "./src/index.html",
+            "copyFiles" : [ ]
+        },
+        {
+            "type" : "debug",
+            "name" : "EncryptDecrypt",
+            "cleanDirs" : [ "./debug/" ],
+            "destDir" : "./debug/",
+            "cssFiles" : [ "./src/EncryptDecrypt.css" ],
+            "jsFile" : null,
+            "htmlFile" : null,
+            "copyFiles" : [ 
+                {
+                    "src" : "./src/indexDebug.html",
+                    "dest" : "./debug/index.html"
+                }
             ]
         }
     ]
