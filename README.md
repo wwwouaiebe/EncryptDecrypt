@@ -43,7 +43,7 @@ Go to the [demo - en ](https://wwwouaiebe.github.io/EncryptDecrypt/docs/demo)
 
 ## How to install
 
-Simply download the project and copy the dist/index.html, dist/encryptdecrypt.min.css and dist/encryptdecrypt.min.js file to your computer or server.
+Simply download the project and copy the docs/demo/index.html, docs/demo/EncryptDecrypt.min.css and docs/demo/EncryptDecrypt.min.js file to your computer or server.
 
 ### Perhaps some changes to do in the index.html file
 
