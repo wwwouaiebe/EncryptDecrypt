@@ -29,7 +29,7 @@ When using this functionality, the encrypted file must uses the same protocol, t
 
 You don't know how to encode to base 64? see [this](https://wwwouaiebe.github.io/base64/). Sources are [there](https://github.com/wwwouaiebe/base64).
 
-Sample : [https://wwwouaiebe.github.io/EncryptDecrypt/demo?fil=aHR0cHM6Ly93d3dvdWFpZWJlLmdpdGh1Yi5pby9FbmNyeXB0RGVjcnlwdC9kZW1vL3NhbXBsZS5lbmM=](https://wwwouaiebe.github.io/EncryptDecrypt/demo?fil=aHR0cHM6Ly93d3dvdWFpZWJlLmdpdGh1Yi5pby9FbmNyeXB0RGVjcnlwdC9kZW1vL3NhbXBsZS5lbmM=)
+Sample : [https://wwwouaiebe.github.io/EncryptDecrypt/demo?fil=aHR0cHM6Ly93d3dvdWFpZWJlLmdpdGh1Yi5pby9FbmNyeXB0RGVjcnlwdC9kb2NzL3NhbXBsZS9zYW1wbGUuZW5j](https://wwwouaiebe.github.io/EncryptDecrypt/demo?fil=aHR0cHM6Ly93d3dvdWFpZWJlLmdpdGh1Yi5pby9FbmNyeXB0RGVjcnlwdC9kb2NzL3NhbXBsZS9zYW1wbGUuZW5j)
 
 The password is **(Mush1544room)**
 
@@ -39,7 +39,7 @@ No solution... put the file to the bin.
 
 ## Demo
 
-Go to the [demo - en ](https://wwwouaiebe.github.io/EncryptDecrypt/demo)
+Go to the [demo - en ](https://wwwouaiebe.github.io/EncryptDecrypt/docs/demo)
 
 ## How to install
 
