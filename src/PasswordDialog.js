@@ -197,7 +197,7 @@ class PasswordDialog {
 
 	#createPasswordDiv ( ) {
 		const pswHTMLElement = document.createElement ( 'div' );
-		pswHTMLElement.id = 'pswDiv';
+		pswHTMLElement.id = 'password-div';
 		this.#mainHTMLElement.appendChild ( pswHTMLElement );
 
 		const pswLabelHTMLElement = document.createElement ( 'label' );
@@ -212,7 +212,7 @@ class PasswordDialog {
 
 		this.#eyeHTMLElement = document.createElement ( 'span' );
 		this.#eyeHTMLElement.innerText = '👁️';
-		this.#eyeHTMLElement.id = 'pswEye';
+		this.#eyeHTMLElement.id = 'password-eye';
 		pswHTMLElement.appendChild ( this.#eyeHTMLElement );
 		this.#eyeHTMLElement.addEventListener ( 'touchstart', ( ) => this.#onMouseDownEye ( ) );
 		this.#eyeHTMLElement.addEventListener ( 'touchend', ( ) => this.#onMouseUpOrLeaveEye ( ) );
@@ -233,14 +233,14 @@ class PasswordDialog {
 		this.#okButtonHtmlElement = document.createElement ( 'input' );
 		this.#okButtonHtmlElement.type = 'button';
 		this.#okButtonHtmlElement.value = 'Ok';
-		this.#okButtonHtmlElement.id = 'okButton';
+		this.#okButtonHtmlElement.id = 'ok-button';
 		this.#okButtonHtmlElement.addEventListener ( 'click', ( ) => this.#onOkButtonClick ( ) );
 		buttonsHTMLElement.appendChild ( this.#okButtonHtmlElement );
 
 		this.#cancelButtonHtmlElement = document.createElement ( 'input' );
 		this.#cancelButtonHtmlElement.type = 'button';
 		this.#cancelButtonHtmlElement.value = 'Cancel';
-		this.#cancelButtonHtmlElement.id = 'cancelButton';
+		this.#cancelButtonHtmlElement.id = 'cancel-button';
 		this.#cancelButtonHtmlElement.addEventListener ( 'click', ( ) => this.#onCancelButtonClick ( ) );
 		buttonsHTMLElement.appendChild ( this.#cancelButtonHtmlElement );
 	}
@@ -251,7 +251,7 @@ class PasswordDialog {
 
 	#createMsgDiv ( ) {
 		this.#msgHTMLElement = document.createElement ( 'div' );
-		this.#msgHTMLElement.id = 'errorPswDiv';
+		this.#msgHTMLElement.id = 'error-password-div';
 		this.#mainHTMLElement.appendChild ( this.#msgHTMLElement );
 	}
 
@@ -262,7 +262,7 @@ class PasswordDialog {
 	constructor ( ) {
 		Object.freeze ( this );
 		this.#mainHTMLElement = document.createElement ( 'div' );
-		this.#mainHTMLElement.id = 'pswMainDiv';
+		this.#mainHTMLElement.id = 'password-main-div';
 
 		this.#createPasswordDiv ( );
 		this.#createButtonsDiv ( );

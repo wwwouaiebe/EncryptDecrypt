@@ -43,9 +43,9 @@ class WaitInterface {
 	constructor ( ) {
 		Object.freeze ( this );
 		this.#mainHTMLElement = document.createElement ( 'div' );
-		this.#mainHTMLElement.id = 'waitAnimation';
+		this.#mainHTMLElement.id = 'wait-animation';
 		const bulletHTMLElement = document.createElement ( 'div' );
-		bulletHTMLElement.id = 'waitAnimationBullet';
+		bulletHTMLElement.id = 'wait-animation-bullet';
 		this.#mainHTMLElement.appendChild ( bulletHTMLElement );
 		this.#hidden = true;
 	}

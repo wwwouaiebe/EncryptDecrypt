@@ -2,7 +2,7 @@
     "type": "module",
     "name": "EncryptDecrypt",
     "version": "2.0.9",
-    "buildNumber": 19,
+    "buildNumber": 25,
     "description": "File encryptor",
     "main": "src/main.js",
     "dependencies": {},

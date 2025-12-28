@@ -65,7 +65,7 @@ class UserInterface {
 	*/
 
 	#onKeyDown ( keyBoardEvent ) {
-		if ( 'urlDecrypt' === keyBoardEvent.target.id && 'Enter' === keyBoardEvent.key ) {
+		if ( 'url-decrypt' === keyBoardEvent.target.id && 'Enter' === keyBoardEvent.key ) {
 			this.#onGoButtonClick ( );
 		}
 	}
@@ -139,7 +139,7 @@ class UserInterface {
 		if ( 'file:' !== new URL ( window.location ).protocol ) {
 			this.#urlDecryptInputHTMLElement = document.createElement ( 'input' );
 			this.#urlDecryptInputHTMLElement.type = 'url';
-			this.#urlDecryptInputHTMLElement.id = 'urlDecrypt';
+			this.#urlDecryptInputHTMLElement.id = 'url-decrypt';
 
 			this.#urlDecryptInputHTMLElement.size = '40';
 			this.#urlDecryptInputHTMLElement.placeholder = 'https://';

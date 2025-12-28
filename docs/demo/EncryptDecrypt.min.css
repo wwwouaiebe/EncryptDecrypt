@@ -6,7 +6,7 @@
  * css code in this page.
  * 
  * EncryptDecrypt - version 2.0.9
- * Build 19 - Sun Dec 28 2025 16:02:20 GMT+0100 (heure normale d’Europe centrale)
+ * Build 25 - Sun Dec 28 2025 20:50:18 GMT+0100 (heure normale d’Europe centrale)
  * Copyright 2019 2025 wwwouaiebe 
  * Contact: https://www.ouaie.be/
  * License: GPL-3.0
@@ -30,4 +30,4 @@
  * 
 */
 
-h3{padding-left:1em;}h3+div{border:solid 0.1em;margin:1em;padding:1em;line-height:250%;}#urlDecrypt{margin-right:1em;}#pswMainDiv{border:solid 0.1em;text-align:center;max-width:12cm;margin-top:2em;margin-left:auto;margin-right:auto;}#pswDiv{text-align:center;padding:2em;}#buttonsDiv{padding-top:1em;}#okButton{margin-right:1em;}#cancelButton{margin-left:1em;}.red{color:red;}#pswEye{padding-left:1em;}#errorPswDiv{padding:1em;}#copyright{position:absolute;bottom:1em;left:1em;}#waitAnimation{margin:auto;height:1em;width:20%;overflow:hidden;}#waitAnimationBullet{background-color:red;height:100%;width:1em;animation:2s linear 0s infinite alternate WaitAnimationBullet;}@keyframes WaitAnimationBullet{ from{ margin-left:0%; } to{ margin-left:calc(100% - 1em); } }
+h3{padding-left:1em;}h3+div{border:solid 0.1em;margin:1em;padding:1em;line-height:250%;}#url-decrypt{margin-right:1em;}#password-main-div{border:solid 0.1em;text-align:center;max-width:12cm;margin-top:2em;margin-left:auto;margin-right:auto;}#password-div{text-align:center;padding:2em;}#buttons-div{padding-top:1em;}#ok-button{margin-right:1em;}#cancel-button{margin-left:1em;}.red{color:red;}#password-eye{padding-left:1em;}#error-password-div{padding:1em;}#copyright{position:absolute;bottom:1em;left:1em;}#wait-animation{margin:auto;height:1em;width:20%;overflow:hidden;}#wait-animation-bullet{background-color:red;height:100%;width:1em;animation:2s linear 0s infinite alternate wait-animation-bullet-keyframe;}@keyframes wait-animation-bullet-keyframe{ from{ margin-left:0%; } to{ margin-left:calc(100% - 1em); } }
