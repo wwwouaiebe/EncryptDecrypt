@@ -1,31 +1,65 @@
-{
-    "ESLintFiles" : [ "./src/**/*.js" ],
-    "styleLintFiles" : [ "./src/**/*.css" ],
-    "tasks" : [
-        {
-            "type" : "release",
-            "name" : "EncryptDecrypt",
-            "cleanDirs" : [ "./docs/demo/" ],
-            "destDir" : "./docs/demo/",
-            "cssFiles" : [ "./src/EncryptDecrypt.css" ],
-            "jsFile" : "./src/main.js",
-            "htmlFile" : "./src/index.html",
-            "copyFiles" : [ ]
-        },
-        {
-            "type" : "debug",
-            "name" : "EncryptDecrypt",
-            "cleanDirs" : [ "./debug/" ],
-            "destDir" : "./debug/",
-            "cssFiles" : [ "./src/EncryptDecrypt.css" ],
-            "jsFile" : null,
-            "htmlFile" : null,
-            "copyFiles" : [ 
-                {
-                    "src" : "./src/indexDebug.html",
-                    "dest" : "./debug/index.html"
-                }
-            ]
+[
+    {
+        "name" : "Running ESLint",
+        "ESLintFiles" : [ "./src/**/*.js" ]
+    },
+    {
+        "name" : "Running StyleLint",
+        "styleLintFiles" : [ "./src/**/*.css" ]
+    },
+    {
+        "type" : "release",
+        "name" : "Cleaning destination directories for release",
+        "cleanDirs" : [ "./docs/demo/" ]
+    },
+    {
+        "type" : "release",
+        "name" : "Building EncryptDecrypt js",
+        "jsFile" : {
+            "htmlPath" : "EncryptDecrypt.min.js",
+            "src" : "./src/main.js",
+            "dest" : "./docs/demo/EncryptDecrypt.min.js"
         }
-    ]
-}
+    },
+    {
+       "type" : "release",
+       "name" : "Building EncryptDecrypt css",
+        "cssFile" : {
+            "htmlPath" : "EncryptDecrypt.min.css",
+            "src" : ["./src/EncryptDecrypt.css" ],
+            "dest" : "./docs/demo/EncryptDecrypt.min.css"
+        }
+    },
+    {
+        "type" : "release",
+        "name" : "Building EncryptDecrypt html",
+        "htmlFile" :
+            { 
+                "src" : "./src/index.html", 
+                "dest" : "./docs/demo/index.html" 
+            }
+    },
+   {
+        "type" : "debug",
+        "name" : "Cleaning destination directories for debug",
+        "cleanDirs" : [ "./debug/" ]
+    },
+    {
+       "type" : "debug",
+       "name" : "Building EncryptDecrypt css",
+        "cssFile" : {
+            "htmlPath" : "EncryptDecrypt.css",
+            "src" : ["./src/EncryptDecrypt.css" ],
+            "dest" : "./debug/EncryptDecrypt.css"
+        }
+    },
+    {
+        "type" : "debug",
+        "name" : "Building EncryptDecrypt html",
+        "htmlFile" :
+            { 
+                "src" : "./src/indexDebug.html", 
+                "dest" : "./debug/index.html" 
+            }
+    }
+]

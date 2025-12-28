@@ -1,1 +1,33 @@
+/**
+ * 
+ * @source: https://github.com/wwwouaiebe/EncryptDecrypt
+ * 
+ * @licstart  The following is the entire license notice for the
+ * css code in this page.
+ * 
+ * EncryptDecrypt - version 2.0.9
+ * Build 19 - Sun Dec 28 2025 16:02:20 GMT+0100 (heure normale d’Europe centrale)
+ * Copyright 2019 2025 wwwouaiebe 
+ * Contact: https://www.ouaie.be/
+ * License: GPL-3.0
+ * 
+ * The css code in this page is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU
+ * General Public License (GNU GPL) as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option)
+ * any later version.  The code is distributed WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+ * 
+ * As additional permission under GNU GPL version 3 section 7, you
+ * may distribute non-source (e.g., minimized or compacted) forms of
+ * that code without the copy of the GNU GPL normally required by
+ * section 4, provided you include this license notice and a URL
+ * through which recipients can access the Corresponding Source.
+ * 
+ * @licend  The above is the entire license notice
+ * for the css code in this page.
+ * 
+*/
+
 h3{padding-left:1em;}h3+div{border:solid 0.1em;margin:1em;padding:1em;line-height:250%;}#urlDecrypt{margin-right:1em;}#pswMainDiv{border:solid 0.1em;text-align:center;max-width:12cm;margin-top:2em;margin-left:auto;margin-right:auto;}#pswDiv{text-align:center;padding:2em;}#buttonsDiv{padding-top:1em;}#okButton{margin-right:1em;}#cancelButton{margin-left:1em;}.red{color:red;}#pswEye{padding-left:1em;}#errorPswDiv{padding:1em;}#copyright{position:absolute;bottom:1em;left:1em;}#waitAnimation{margin:auto;height:1em;width:20%;overflow:hidden;}#waitAnimationBullet{background-color:red;height:100%;width:1em;animation:2s linear 0s infinite alternate WaitAnimationBullet;}@keyframes WaitAnimationBullet{ from{ margin-left:0%; } to{ margin-left:calc(100% - 1em); } }
